@@ -1,0 +1,119 @@
+@import "./variables";
+.my-edu-wrap {
+  margin: 40px auto 80px;
+  max-width: 1440px;
+
+  h3 {
+    font-size: 1.6rem;
+    font-weight: 600;
+    padding: 14px 0;
+    border-bottom: 1px solid #ccc;
+    display: flex;
+    justify-content: space-between;
+    span {
+      font-size: 1.2rem;
+      font-weight: 400;
+      float: right;
+    }
+  }
+
+  // 내학습 강의 리스트
+  .myedu-list {
+    margin: 24px auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 1%;
+    li {
+      position: relative;
+      width: 19%;
+      @include tablet-medium {
+        width: 49%;
+      }
+      font-size: 1.4rem;
+      picture {
+        cursor: pointer;
+        img {
+          width: 100%;
+          margin: 8px 0;
+        }
+      }
+      h4 {
+        font-weight: 600;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        line-height: 1.4;
+      }
+      p {
+        margin: 8px 0;
+      }
+      button {
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 8px 24px;
+        width: 100%;
+        cursor: pointer;
+      }
+    }
+    .star-grade2 {
+      img {
+        transform: translateY(2px);
+      }
+      img:nth-child(2n) {
+        transform: translateY(2px) scaleX(-1);
+      }
+    }
+  }
+
+  // 리뷰상세 팝업
+  .review-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    width: 300px;
+    text-align: center;
+    z-index: 1000;
+
+    .popup-content {
+      line-height: 1.4;
+      h3 {
+        margin-bottom: 10px;
+        font-size: 1.6rem;
+        font-weight: 600;
+      }
+      p {
+        margin: 5px 0;
+        font-size: 1.4rem;
+      }
+    }
+    .star-grade {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      b {
+        padding-right: 4px;
+      }
+      .half-star:nth-child(2n-1) {
+        transform: scaleX(-1);
+      }
+    }
+
+    .close-btn {
+      margin-top: 10px;
+      padding: 5px 10px;
+      background: red;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+  }
+}

@@ -47,7 +47,16 @@ const DetailView = () => {
 
   // 리뷰 데이터 가져오기
   useEffect(() => {
-    const filteredReviews = reviewData.filter((item) => item.eduId === Number(id));
+    // 로컬스토리지에서 'review-data' 가져오기
+    let storedReviews = JSON.parse(localStorage.getItem("review-data"));
+  
+    // 만약 로컬스토리지에 리뷰 데이터가 없으면 기본 JSON 데이터 사용
+    if (!storedReviews) {
+      storedReviews = reviewData;
+    }
+  
+    // 해당 강의의 리뷰 필터링
+    const filteredReviews = storedReviews.filter((item) => item.eduId === Number(id));
     setReviews(filteredReviews);
   }, [id]);
 
@@ -191,10 +200,10 @@ const DetailView = () => {
                 누구나 할 수 있어요! 💪
               </p>
               <p>
-                <img src="https://cdn.inflearn.com/public/files/courses/324145/cda9b423-a410-497a-ae22-8d36b100bf99/1.png" />
+                <img src="https://cdn.inflearn.com/public/files/courses/324145/cda9b423-a410-497a-ae22-8d36b100bf99/1.png" alt="" />
               </p>
               <p>
-                <img src="https://cdn.inflearn.com/public/files/courses/324145/129d8e36-3974-4ebe-a5fa-e4bd82f8ac0f/speak.gif" />
+                <img src="https://cdn.inflearn.com/public/files/courses/324145/129d8e36-3974-4ebe-a5fa-e4bd82f8ac0f/speak.gif" alt="" />
               </p>
               <h3>프로그래밍이 우리에게 자유를 줄 수단이라서가 아닐까요?&nbsp;</h3>
               <ul>
@@ -268,7 +277,7 @@ const DetailView = () => {
               </h3>
               <p>
                 <a href="http://inf-mindmap.s3-website.ap-northeast-2.amazonaws.com/inflearn-python-courses-807b09e61479572aac84b4130be7a6a2.html" target="_blank" rel="noopener noreferrer">
-                  <img src="https://cdn.inflearn.com/public/files/courses/324145/9b09b0a8-ea66-4743-8aba-fd5c1395fc84/optimize.jfif" />
+                  <img src="https://cdn.inflearn.com/public/files/courses/324145/9b09b0a8-ea66-4743-8aba-fd5c1395fc84/optimize.jfif" alt="" />
                 </a>
               </p>
               <h3>

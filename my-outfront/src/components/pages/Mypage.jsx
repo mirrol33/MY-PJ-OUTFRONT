@@ -1,130 +1,192 @@
-// 마이페이지 컴포넌트 ./src/componets/page/Mypage.jsx
-import React, {useEffect, useState} from "react";
+// Mypage.jsx
+import React, { useEffect, useState } from "react";
 import "../../scss/mypage.scss";
-import {useNavigate} from "react-router-dom";
-// 로그인한 사용자의 학습 정보 import 직접 불러오기
+import { useNavigate } from "react-router-dom";
 import userData from "../../js/data/user_data.json";
-// 리뷰 데이터 import 직접 불러오기
 import reviewData from "../../js/data/review_data.json";
 
-function Mypage() {
+// 프로필 이미지 컴포넌트
+const ProfileImage = ({ profileImg, onChange }) => (
+  <div>
+    <label htmlFor="profile-upload">
+      <picture>
+        <img src={profileImg} alt="profile" />
+      </picture>
+    </label>
+    <input
+      type="file"
+      id="profile-upload"
+      accept="image/*"
+      style={{ display: "none" }}
+      onChange={onChange}
+    />
+  </div>
+);
+
+// 마이페이지 컴포넌트
+const Mypage = () => {
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState(null); // 로그인한 사용자 정보
-  const [userEduList, setUserEduList] = useState([]); // 로그인한 사용자의 학습 목록
-
-  const reviewList = reviewData; // 리뷰 데이터
-  const [selectedReview, setSelectedReview] = useState(null); // 선택된 리뷰 정보 (팝업)
-  const [showPopup, setShowPopup] = useState(false); // 팝업 표시 여부
-
-  const [userBoardPosts, setUserBoardPosts] = useState([]); // 사용자의 게시글 목록
+  const [userEduList, setUserEduList] = useState([]); // 사용자 내학습 리스트 정보
+  const [reviewList, setReviewList] = useState(reviewData); // 수강평 정보
+  const [selectedReview, setSelectedReview] = useState(null); // 수강평 정보
+  const [showPopup, setShowPopup] = useState(false); // 수강평 팝업
+  const [newReview, setNewReview] = useState({
+    idx: null,
+    eduId: "",
+    uid: "",
+    name: "",
+    grade: 0.5, // 평점 기본값 0.5
+    text: "수강 후기를 작성해주세요", // 리뷰 기본값
+  }); // 신규 수강평
+  const [userBoardPosts, setUserBoardPosts] = useState([]); // 사용자 커뮤니티 게시글 정보
+  const [profileImg, setProfileImg] = useState("./images/mypage/1.png"); // 사용자 프로필 이미지
 
   useEffect(() => {
-    // 세션 스토리지에서 로그인한 사용자 정보 가져오기
-    const storedUser = sessionStorage.getItem("minfo");
+    // 로컬스토리지에서 'mypage-user-data' 키가 있는지 확인
+    let storedUserData = localStorage.getItem("mypage-user-data");
+
+    if (!storedUserData) {
+      // 로컬스토리지에 'mypage-user-data'가 없으면 user_data.json 데이터를 저장
+      console.log(
+        "로컬스토리지에 'mypage-user-data'가 없으므로, user_data.json을 추가합니다."
+      );
+      localStorage.setItem("mypage-user-data", JSON.stringify(userData));
+      storedUserData = JSON.stringify(userData); // 로컬스토리지에 저장된 값을 다시 가져옴
+    }
+
+    const storedUser = sessionStorage.getItem("minfo"); // 로그인한 사용자 정보 읽기
+    const storedReviews =
+      JSON.parse(localStorage.getItem("review-data")) || reviewData; // 수강평 데이터 읽기
+    setReviewList(storedReviews);
+
     if (storedUser) {
-      const parsedUser = JSON.parse(storedUser);
+      // 만약 로그인한 사용자가 있다면
+      const parsedUser = JSON.parse(storedUser); // 사용자 정보 객체화
       setUserInfo(parsedUser);
 
-      // 로컬스토리지에 'mypage-user-data' 키가 존재하는지 확인
-      const existingData = localStorage.getItem("mypage-user-data");
+      storedUserData = JSON.parse(storedUserData); // 로컬스토리지에서 사용자 데이터 가져오기
+      const currentUser = storedUserData.find(
+        (user) => user.uid === parsedUser.uid
+      ); // 로그인한 사용자가 내학습 데이터가 존재하는지 여부확인 (true/false)
 
-      if (existingData) {
-        console.log("이미 mypage-user-data 데이터가 로컬스토리지에 있음!!!");
-      } else {
-        // userData를 로컬스토리지에 저장함
-        localStorage.setItem("mypage-user-data", JSON.stringify(userData));
-      }
-
-
-      // 로그인한 사용자의 학습 정보 가져오기
-      const currentUser = userData.find((user) => user.uid === parsedUser.uid);
       if (currentUser) {
-        setUserEduList(currentUser.eduIng);
+        // true
+        setUserEduList(currentUser.eduIng); // 내학습 데이터 셋팅!
       }
-      // 게시판 데이터 불러오기
-      const boardData = JSON.parse(localStorage.getItem("board-data")) || [];
-      const myPosts = boardData.filter((post) => post.uid === parsedUser.uid);
-      setUserBoardPosts(myPosts);
+
+      const boardData = JSON.parse(localStorage.getItem("board-data")) || []; // 커뮤니티 게시글 읽기와 객체화
+      setUserBoardPosts(
+        boardData.filter((post) => post.uid === parsedUser.uid)
+      ); // 커뮤니티 게시글 uid값과 로그인한 사용자 uid 값이 동일한 내 게시글만 셋팅!!
     }
   }, []);
 
-  // 리뷰 팝업 열기 함수
   const openReviewPopup = (eduId) => {
-    const userReview = reviewList.find((review) => review.uid === userInfo.uid && review.eduId === eduId);
+    // 수강평 팝업 함수
+    const userReview = reviewList.find(
+      (review) => review.uid === userInfo.uid && review.eduId === eduId
+    );
 
     if (userReview) {
       setSelectedReview(userReview);
-      setShowPopup(true);
+      setNewReview({ grade: userReview.grade, text: userReview.text });
     } else {
-      alert("작성된 수강평이 없습니다.");
+      setSelectedReview({ eduId, uid: userInfo.uid });
+      setNewReview({ grade: 0.5, text: "수강 후기를 작성해주세요" }); // 기본값 설정
     }
+
+    setShowPopup(true);
   };
 
-  // 팝업 닫기 함수
   const closePopup = () => {
+    // 수강평 팝업 닫기 함수
     setShowPopup(false);
     setSelectedReview(null);
+    setNewReview({ grade: 0.5, text: "수강 후기를 작성해주세요" }); // 기본값으로 초기화
   };
 
-  const [profileImg, setProfileImg] = useState("./images/mypage/1.png"); // 기본 프로필 이미지
-  const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB 제한
-  const ALLOWED_EXTENSIONS = ["jpg", "jpeg", "png", "gif"]; // 허용 확장자
+  const handleChange = (e) => {
+    // 수강평 수정 함수
+    const { name, value } = e.target;
+    setNewReview((prevReview) => ({
+      ...prevReview,
+      [name]: name === "grade" ? parseFloat(value) : value,
+    }));
+  };
 
-  useEffect(() => {
-    const storedUser = sessionStorage.getItem("minfo");
-    if (storedUser) {
-      setUserInfo(JSON.parse(storedUser));
+  const saveReview = () => {
+    // 수강평 저장 함수
+    const storedReviews =
+      JSON.parse(localStorage.getItem("review-data")) || reviewData;
+
+    // `uid`, `name`, `eduId`를 `userInfo`와 `newReview`에서 가져오기
+    const updatedReview = {
+      ...newReview,
+      uid: userInfo.uid,
+      name: userInfo.unm,
+      eduId: selectedReview.eduId, // `eduId`를 추가
+    };
+
+    const existingReviewIndex = storedReviews.findIndex(
+      (review) =>
+        review.uid === userInfo.uid && review.eduId === selectedReview.eduId
+    );
+
+    if (existingReviewIndex !== -1) {
+      // 기존 리뷰가 있으면 수정
+      storedReviews[existingReviewIndex] = {
+        ...storedReviews[existingReviewIndex],
+        ...updatedReview,
+      };
+    } else {
+      // 새로운 리뷰 추가
+      const newIdx =
+        storedReviews.length > 0
+          ? storedReviews[storedReviews.length - 1].idx + 1
+          : 1;
+      storedReviews.push({ ...updatedReview, idx: newIdx });
     }
 
-    // 저장된 프로필 이미지 가져오기
-    const savedProfile = localStorage.getItem("profile-img");
-    if (savedProfile) {
-      setProfileImg(savedProfile);
-    }
-  }, []);
+    localStorage.setItem("review-data", JSON.stringify(storedReviews));
+    setReviewList(storedReviews);
 
-  // 프로필 이미지 변경 핸들러
+    alert("수강평이 저장되었습니다!");
+    setShowPopup(false);
+  };
+
   const handleProfileChange = (event) => {
     const file = event.target.files[0];
+    const fileExtension = file?.name.split(".").pop().toLowerCase();
 
-    if (file) {
-      // 확장자 확인
-      const fileExtension = file.name.split(".").pop().toLowerCase();
-      if (!ALLOWED_EXTENSIONS.includes(fileExtension)) {
-        alert("이미지 파일(jpg, jpeg, png, gif)만 업로드할 수 있습니다.");
-        return;
-      }
-
-      // 파일 크기 확인
-      if (file.size > MAX_FILE_SIZE) {
-        alert("이미지 크기가 2MB를 초과했습니다. 다른 이미지를 선택해주세요.");
-        return;
-      }
-
-      // 파일이 유효하면 로컬 스토리지에 저장
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const imageUrl = e.target.result;
-        setProfileImg(imageUrl);
-        localStorage.setItem("profile-img", imageUrl); // 변경된 프로필 저장
-      };
-      reader.readAsDataURL(file);
+    if (!["jpg", "jpeg", "png", "gif"].includes(fileExtension)) {
+      alert("이미지 파일(jpg, jpeg, png, gif)만 업로드할 수 있습니다.");
+      return;
     }
+
+    if (file.size > 2 * 1024 * 1024) {
+      alert("이미지 크기가 2MB를 초과했습니다. 다른 이미지를 선택해주세요.");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const imageUrl = e.target.result;
+      setProfileImg(imageUrl);
+      localStorage.setItem("profile-img", imageUrl);
+    };
+    reader.readAsDataURL(file);
   };
 
   return (
     <div className="mypage-wrap">
       <div className="mypage-top">
         <h2>{userInfo ? `${userInfo.unm}님의 마이페이지` : "마이페이지"}</h2>
-        <label htmlFor="profile-upload">
-          <picture>
-            <img src={profileImg} alt="profile" />
-          </picture>
-        </label>
-        <input type="file" id="profile-upload" accept="image/*" style={{display: "none"}} onChange={handleProfileChange} />
+        <ProfileImage profileImg={profileImg} onChange={handleProfileChange} />
         <span>ID : {userInfo ? userInfo.uid : "로그인 필요!"}</span>
         <p>
-          <b>{userInfo ? userInfo.unm : "비회원"}</b>님 😎 <b>아웃프런</b>에 오신 것을 환영합니다! 😍 <br />
+          <b>{userInfo ? userInfo.unm : "비회원"}</b>님 😎 <b>아웃프런</b>에
+          오신 것을 환영합니다! 😍 <br />
           <b>당장 공부하지 않으면 당신의 인생이 망할 수도 있습니다!!</b>
         </p>
       </div>
@@ -133,31 +195,48 @@ function Mypage() {
         {/* 내 학습 */}
         <div className="box my-edu">
           <h3>
-            <a href="/myedu">내 학습</a>
-            <a href="/myedu">
+            <a href={`${process.env.PUBLIC_URL}/myedu`}>내 학습</a>
+            <a href={`${process.env.PUBLIC_URL}/myedu`}>
               <span>more</span>
             </a>
           </h3>
           <ul className="myedu-list">
             {userEduList.length > 0 ? (
               userEduList.map((edu) => {
-                const userReview = reviewList.find((review) => review.uid === userInfo.uid && review.eduId === edu.eduId);
-
+                const userReview = reviewList.find(
+                  (review) =>
+                    review.uid === userInfo.uid && review.eduId === edu.eduId
+                );
                 return (
                   <li key={edu.eduId}>
                     <picture onClick={() => navigate(`/detail/${edu.eduId}`)}>
-                      <img src={`./images/edu_thumb/${edu.eduId}.png`} alt={`강의 이미지 ${edu.eduId}`} />
+                      <img
+                        src={`./images/edu_thumb/${edu.eduId}.png`}
+                        alt={`강의 이미지 ${edu.eduId}`}
+                      />
                     </picture>
                     <h4>{edu.eduName}</h4>
                     <p>
                       {edu.eduState} ({edu.eduRate}%)
                     </p>
                     {parseInt(edu.eduRate) >= 60 && (
-                      <button className="my-review-btn" onClick={() => openReviewPopup(edu.eduId)}>
+                      <button
+                        className="my-review-btn"
+                        onClick={() => openReviewPopup(edu.eduId)}>
                         {userReview ? (
                           <span className="star-grade2">
-                            평점 (<img src="./images/main/star.png" alt="별" width="8px" />
-                            <img src="./images/main/star.png" alt="별" width="8" /> {userReview.grade})
+                            평점 (
+                            <img
+                              src="./images/main/star.png"
+                              alt="별"
+                              width="8px"
+                            />
+                            <img
+                              src="./images/main/star.png"
+                              alt="별"
+                              width="8px"
+                            />{" "}
+                            {userReview.grade})
                           </span>
                         ) : (
                           "수강평 작성"
@@ -176,15 +255,19 @@ function Mypage() {
         {/* 내 커뮤니티 게시글 */}
         <div className="box my-community">
           <h3>
-            <a href="/board">내 커뮤니티 게시글</a>
-            <a href="/board">
+            <a href={`${process.env.PUBLIC_URL}/board`}>내 커뮤니티 게시글</a>
+            <a href={`${process.env.PUBLIC_URL}/board`}>
               <span>more</span>
             </a>
           </h3>
           <ul className="myboard-list">
             {userBoardPosts.length > 0 ? (
               userBoardPosts.map((post) => (
-                <li key={post.idx} onClick={() => navigate("/board", {state: {mode: "R", selData: post}})}>
+                <li
+                  key={post.idx}
+                  onClick={() =>
+                    navigate("/board", { state: { mode: "R", selData: post } })
+                  }>
                   <h4>{post.tit}</h4>
                   <p>
                     {post.date} | 조회수: {post.cnt}
@@ -204,24 +287,34 @@ function Mypage() {
       {showPopup && selectedReview && (
         <div className="review-popup">
           <div className="popup-content">
-            <h3>수강평</h3>
-            <p className="star-grade">
-              <b>평점:</b>
-              {Array.from({length: Math.round(selectedReview.grade / 0.5)}, (_, i) => (
-                <span className="half-star">
-                  <img key={i} src="./images/main/star.png" alt="별" width="8" />
-                </span>
-              ))}
-            </p>
-            <p>{selectedReview.text}</p>
-            <button className="close-btn" onClick={closePopup}>
-              닫기
-            </button>
+            <h3>수강평 작성</h3>
+            <label>
+              평점:
+              <input
+                type="number"
+                name="grade"
+                min="0.5"
+                max="5"
+                step="0.5"
+                value={newReview.grade}
+                onChange={handleChange}
+              />
+            </label>
+            <label>
+              내용:
+              <textarea
+                name="text"
+                value={newReview.text}
+                onChange={handleChange}
+              />
+            </label>
+            <button onClick={saveReview}>저장</button>
+            <button onClick={closePopup}>닫기</button>
           </div>
         </div>
       )}
     </div>
   );
-}
+};
 
 export default Mypage;

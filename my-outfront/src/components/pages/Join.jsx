@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import "../../scss/pages/join.scss";
 import { Link, useNavigate } from "react-router-dom";
 import { initData } from "../../js/func/mem_fn";
@@ -141,7 +141,7 @@ function Join() {
 
       document.querySelector(".submit").innerText = "아웃프런과 함께해요 👏";
       setTimeout(() => {
-        goPage("./");
+        goPage("/login");
       }, 1000);
     } else {
       alert("🚨필수 입력사항을 확인해주세요🚨");

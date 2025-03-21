@@ -22,6 +22,12 @@
         "eduName": "[개발부터 수익화까지] AI로 코드 한 줄 짜지 않고 만드는 IT 올인원 실전 프로젝트!",
         "eduRate": "0",
         "eduState" : "학습전"
+      },
+      {
+        "eduId" : 4,
+        "eduName": "핵심만 쏙쏙 Jira&Confluence",
+        "eduRate": "10",
+        "eduState" : "학습중"
       }
     ]
   },

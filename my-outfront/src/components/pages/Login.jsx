@@ -1,6 +1,6 @@
 // ./src/components/pages/Login.jsx
 
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "../../scss/pages/join.scss";
 import "../../scss/pages/member.scss";
 import { initData } from "../../js/func/mem_fn";
