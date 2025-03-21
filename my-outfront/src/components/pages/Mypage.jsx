@@ -11,9 +11,11 @@ function Mypage() {
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState(null); // 로그인한 사용자 정보
   const [userEduList, setUserEduList] = useState([]); // 로그인한 사용자의 학습 목록
-  const [reviewList, setReviewList] = useState(reviewData); // 리뷰 데이터
+
+  const reviewList = reviewData; // 리뷰 데이터
   const [selectedReview, setSelectedReview] = useState(null); // 선택된 리뷰 정보 (팝업)
   const [showPopup, setShowPopup] = useState(false); // 팝업 표시 여부
+
   const [userBoardPosts, setUserBoardPosts] = useState([]); // 사용자의 게시글 목록
 
   useEffect(() => {
@@ -22,6 +24,17 @@ function Mypage() {
     if (storedUser) {
       const parsedUser = JSON.parse(storedUser);
       setUserInfo(parsedUser);
+
+      // 로컬스토리지에 'mypage-user-data' 키가 존재하는지 확인
+      const existingData = localStorage.getItem("mypage-user-data");
+
+      if (existingData) {
+        console.log("이미 mypage-user-data 데이터가 로컬스토리지에 있음!!!");
+      } else {
+        // userData를 로컬스토리지에 저장함
+        localStorage.setItem("mypage-user-data", JSON.stringify(userData));
+      }
+
 
       // 로그인한 사용자의 학습 정보 가져오기
       const currentUser = userData.find((user) => user.uid === parsedUser.uid);
@@ -143,7 +156,8 @@ function Mypage() {
                       <button className="my-review-btn" onClick={() => openReviewPopup(edu.eduId)}>
                         {userReview ? (
                           <span className="star-grade2">
-                            평점 (<img src="./images/main/star.png" alt="별" width="8px" /><img src="./images/main/star.png" alt="별" width="8" /> {userReview.grade})
+                            평점 (<img src="./images/main/star.png" alt="별" width="8px" />
+                            <img src="./images/main/star.png" alt="별" width="8" /> {userReview.grade})
                           </span>
                         ) : (
                           "수강평 작성"

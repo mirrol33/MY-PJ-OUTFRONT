@@ -4,6 +4,8 @@ import "../../scss/header.scss";
 
 const Header = memo(({goPage, loginSts, setLoginSts}) => {
 
+  const categories = ["전체", "개발프로그래밍", "게임개발", "데이터사이언스", "인공지능", "보안네트워크", "기타"]; // 강의 카테고리
+
   // 리턴코드구역
   return (
     <header>
@@ -19,21 +21,16 @@ const Header = memo(({goPage, loginSts, setLoginSts}) => {
           <ul>
             <li>
               <a href={`${process.env.PUBLIC_URL}/#전체`}>강의</a>
+              <ul>
+                {categories.slice(1).map((category) => (
+                  <li key={category}>
+                    <a href={`${process.env.PUBLIC_URL}/#${category}`}>{category}</a>
+                  </li>
+                ))}
+              </ul>
             </li>
             <li>
-              <a href={`${process.env.PUBLIC_URL}/#개발프로그래밍`}>개발프로그래밍</a>
-            </li>
-            <li>
-              <a href={`${process.env.PUBLIC_URL}/#게임개발`}>게임개발</a>
-            </li>
-            <li>
-              <a href={`${process.env.PUBLIC_URL}/#인공지능`}>인공지능</a>
-            </li>
-            <li>
-              <a href={`${process.env.PUBLIC_URL}/#보안네트워크`}>보안네트워크</a>
-            </li>
-            <li>
-              <a href={`${process.env.PUBLIC_URL}/#기타`}>기타</a>
+              <a href={`${process.env.PUBLIC_URL}/board`}>커뮤니티</a>
             </li>
           </ul>
         </div>
