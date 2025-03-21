@@ -1,5 +1,5 @@
 {
-  "homepage": "https://mirrol33.github.io/MY-REACT-PJ/",
+  "homepage": "/MY-REACT-PJ/",
   "name": "my-outfront",
   "version": "0.1.0",
   "private": true,
@@ -18,8 +18,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "predeploy":"npm run build",
-    "deploy":"gh-pages -d build"
+    "predeploy": "npm run build",
+    "deploy": "rmdir /s /q docs && move build docs"
   },
   "eslintConfig": {
     "extends": [
