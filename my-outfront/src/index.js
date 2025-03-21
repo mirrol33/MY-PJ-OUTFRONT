@@ -1,17 +1,44 @@
+// index.js
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import { BrowserRouter, Routes, Route } from'react-router-dom';
+import Layout from './components/layout/Layout';
+import Main from './components/pages/Main';
+import './scss/common.scss';
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+import Education from './components/pages/Education.jsx';
+import Community from './components/pages/Community.jsx';
+import DetailView from './components/pages/DetailView.jsx';
+import Mypage from './components/pages/Mypage.jsx';
+import Login from './components/pages/Login.jsx';
+import Join from './components/pages/Join.jsx';
+import MyEdu from './components/pages/MyEdu.jsx';
+import Board from './components/pages/Board.jsx';
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+// 메인 컴포넌트 ////////////////////////////
+export default function MainComponent(){
+  // 리턴 코드구역
+  return (
+  <BrowserRouter basename={process.env.PUBLIC_URL}>
+    <Routes>
+      <Route path="/" element={<Layout />}>
+        <Route index element={<Main />} />
+        <Route path="/detail/:id" element={<DetailView />} />
+        <Route path="education" element={<Education />} />
+        <Route path="community" element={<Community />} />
+        <Route path="mypage" element={<Mypage />} />
+        <Route path="myedu" element={<MyEdu />} />
+        <Route path="login" element={<Login />} />
+        <Route path="join" element={<Join />} />        
+        <Route path="board" element={<Board />} />
+      </Route>
+    </Routes>
+  </BrowserRouter>
+  );
+} //// MainComponent ////
+
+/// 컴포넌트 출력 ///
+// 먼저 root 객체 만들기
+const root = ReactDOM.createRoot(document.querySelector("#root"));
+// 출력하기
+root.render(<MainComponent />);

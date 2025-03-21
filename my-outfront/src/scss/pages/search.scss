@@ -1,0 +1,165 @@
+// 검색 scss : search.scss
+
+@import "../variables";
+
+.search-result {
+  max-width: 1440px;
+  margin-inline: auto;
+  color: $color-text;
+
+  .search-title {
+    text-align: center;
+    font-size: 3rem;
+    padding-block: 2rem;
+
+    span {
+      font-weight: 600;
+      // border-bottom: .4rem solid $color-primary;
+    }
+    @include tablet-medium {
+      font-size: 2.4rem;
+    }
+    @include mobile {
+      font-size: 2rem;
+    }
+  }
+  .message-container {
+    text-align: center;
+    color: $color-text;
+    padding: 10vh 0;
+    .img-box {
+      position: relative;
+      width: 40vh;
+      height: 25vh;
+      background-image: linear-gradient(
+        140deg,
+        #e81010 0%,
+        #f5fd00 20%,
+        #00ff00 40%,
+        #00a2ff 60%,
+        #1e00ff 80%,
+        #fb00ff 100%,
+        #ddd 20%
+        );
+        margin-inline: auto;
+        box-shadow: inset 0px -1px 1rem 1rem #fff;
+        background-size: 130%;
+        animation: colorChange 5s ease infinite;
+        @keyframes colorChange{
+          0%{
+              background-position: 0% 50%;
+          }
+          50%{
+              background-position: 100% 50%;
+          }
+          100%{
+              background-position: 0% 50%;
+          }
+      }
+      img {
+        height: 65%;
+        position: absolute;
+        bottom: 12px;
+        left: 70px;
+      }
+    }
+    .none-title {
+      padding-top: 1rem;
+      text-align: center;
+      font-size: 1.6rem;
+      line-height: 1.5;
+    }
+    .none-desc {
+      font-size: 1.4rem;
+      color: $color-midgray;
+      line-height: 1.5;
+    }
+    .research {
+      font-size: 1.2rem;
+      padding: 0.5rem 1rem;
+      color: $color-white;
+      background: $color-text;
+      border-radius: 0.8rem;
+      margin: 2rem;
+      cursor: pointer;
+    }
+
+    span {
+      font-weight: 600;
+      // border-bottom: .4rem solid $color-primary;
+    }
+    @include tablet-medium {
+      font-size: 2.4rem;
+    }
+    @include mobile {
+      font-size: 2rem;
+    }
+  }
+}
+
+.search-wrap {
+  padding: 4rem 1.6rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3rem;
+  font-size: 1.4rem;
+  line-height: 1.2;
+  @include tablet-medium {
+    gap: 4%;
+  }
+
+  .search-edu {
+    position: relative;
+    width: calc(20% - 24px);
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    cursor: pointer;
+    @include tablet-medium {
+      width: 48%;
+      margin-bottom: 2rem;
+    }
+
+    .search-image {
+      width: 100%;
+
+      img {
+        border: 1px solid #ddd;
+        border-radius: 1rem;
+        box-sizing: border-box;
+        overflow: hidden;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+
+    .search-tit {
+      color: $color-text;
+      font-size: 1.6rem;
+      font-weight: 600;
+      padding: 12px 0;
+    }
+    p {
+      color: $color-text;
+      margin-bottom: .4rem;
+    }
+    .search-desc {
+      text-overflow: ellipsis;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+    }
+
+    .cart-btn {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      i {
+        font-size: 20px;
+        color: $color-text;
+      }
+    }
+  }
+}

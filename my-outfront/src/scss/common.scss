@@ -1,0 +1,9 @@
+@import './reset';
+// ./bublic/index.html 파일에서 웹폰트 불러옴!
+// @import './core'; 필요없음!!
+
+html, body {
+    font-family: "Pretendard Variable", Pretendard, sans-serif;
+    font-size: 10px;
+}
+

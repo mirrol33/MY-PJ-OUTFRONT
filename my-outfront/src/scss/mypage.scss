@@ -1,0 +1,213 @@
+@import "./variables";
+
+.mypage-wrap {
+  margin: 40px auto 80px;
+  max-width: 1440px;
+  .mypage-top {
+    text-align: center;
+    padding: 40px 0;
+    background: #f1f1f1;
+    padding: 50px 24px;
+    h2 {
+      font-weight: 700;
+      font-size: min(8vw, 3.8rem);
+      margin-bottom: 24px;
+    }
+    picture {
+      position: relative;
+      width: 200px;
+      height: 200px;
+      max-width: 80vw;
+      max-height: 80vw;
+      box-sizing: border-box;
+      border-radius: 50%;
+      overflow: hidden;
+      display: inline-block;
+      cursor: pointer;
+      border: 4px solid #fff;
+      background: #eee;
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+    span {
+      font-weight: 600;
+      font-size: min(10vw, 1.8rem);
+      margin: 24px 0;
+      display: block;
+    }
+    p {
+      font-size: min(5.6vw, 3.8rem);
+      font-weight: 300;
+      line-height: 1.4;
+      br {
+        @include tablet-medium {
+          display: none;
+        }
+      }
+      b {
+        font-weight: 600;
+      }
+    }
+  }
+  hr {
+    border: none;
+    border-top: 1px dotted #ccc;
+    padding: 0;
+    margin: 0;
+  }
+  .mypage-contents {
+    display: flex;
+    gap: 5%;
+    @include tablet-medium {
+      display: block;
+      gap: 0;
+      padding: 24px;
+    }
+    .box {
+      width: 50%;
+      @include tablet-medium {
+        width: 100%;
+      }
+      margin-top: 40px;
+      h3 {
+        font-size: 1.6rem;
+        font-weight: 600;
+        padding: 14px 0;
+        border-bottom: 1px solid #ccc;
+        display: flex;
+        justify-content: space-between;
+        span {
+          font-size: 1.2rem;
+          font-weight: 400;
+          float: right;
+        }
+      }
+    }
+    .myedu-list {
+      margin: 24px auto;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      gap: 1%;
+      li {
+        position: relative;
+        width: 24%;
+        @include tablet-medium {
+          width: 49%;
+        }
+        font-size: 1.4rem;
+        picture {
+          cursor: pointer;
+          img {
+            width: 100%;
+            margin: 8px 0;
+          }
+        }
+        h4 {
+          font-weight: 600;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 2;
+        }
+        p {
+          margin: 8px 0;
+        }
+        button {
+          border: 1px solid #ccc;
+          border-radius: 8px;
+          padding: 8px 24px;
+          width: 100%;
+          cursor: pointer;
+        }
+      }
+      .star-grade2 {
+        img {
+          transform: translateY(2px);
+        }
+        img:nth-child(2n) {
+          transform: translateY(2px) scaleX(-1);
+        }
+      }
+    }
+    .myboard-list {
+      margin: 24px auto;
+      position: relative;
+      li {
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 1px dotted #ddd;
+        padding: 1.4rem 0;
+        font-size: 1.2rem;
+        h4 {
+          font-size: 1.4rem;
+          width: 60%;
+          cursor: pointer;
+          font-weight: 600;
+        }
+      }
+    }
+  }
+  .empty-msg {
+    width: 100% !important;
+    text-align: center;
+    font-size: 1.4rem !important;
+    display: block !important;
+    border: none !important;
+    padding: 1.4rem 0;
+    color: #777;
+  }
+
+  // 리뷰 상세 팝업
+  .review-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    width: 300px;
+    text-align: center;
+    z-index: 1000;
+
+    .popup-content {
+      line-height: 1.4;
+      h3 {
+        margin-bottom: 10px;
+        font-size: 1.6rem;
+        font-weight: 600;
+      }
+      p {
+        margin: 5px 0;
+        font-size: 1.4rem;
+      }
+    }
+    .star-grade {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      b {
+        padding-right: 4px;
+      }
+      .half-star:nth-child(2n-1) {
+        transform: scaleX(-1);
+      }
+    }
+
+    .close-btn {
+      margin-top: 10px;
+      padding: 5px 10px;
+      background: red;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+  }
+}

@@ -1,0 +1,157 @@
+/* src/scss/main.scss */
+
+@import "./variables";
+
+.main-wrap {
+  position: relative;
+  max-width: 1440px;
+  margin: 100px auto;
+  h2 {
+    font-size: 2rem;
+    font-weight: 600;
+    text-align: center;
+  }
+  .sort-opt {
+    display: flex;
+    justify-content: center;
+    margin-top: 24px;
+    label {
+      display: none;
+    }
+    select {
+      font-size: 1.2rem;
+      padding: 12px;
+      border: 1px solid #ddd;
+    }
+  }
+  .edu-menu {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    margin: 24px 0;
+    li {
+      border: 1px solid $color-board;
+      border-right: 0;
+      button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+        border: none;
+        background: transparent;
+        padding: 12px 24px;
+        cursor: pointer;
+        font-size: min(5vw, 1.4rem);
+        @include tablet-medium {
+          padding: 12px 1vw;
+          background: #f1f1f1;
+        }
+        img {
+          height: 20px;
+          @include tablet-medium {
+            display: none;
+          }
+        }
+        @include desktop {
+          flex-direction: column;
+          gap: 4px;
+        }
+      }
+      &:last-child {
+        border-right: 1px solid $color-board;
+        @include tablet-medium {
+          border: none;
+        }
+      }
+      @include tablet-medium {
+        border: none;
+      }
+    }
+  }
+  .list-wrap {
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 24px;
+    font-size: 1.4rem;
+    line-height: 1.2;
+    padding-left: 24px;
+    @include tablet-medium {
+      margin: 0 auto;
+      width: 96%;
+      justify-content: space-between;
+      padding-left: 0px;
+      gap: 24px 0;
+    }
+    li {
+      position: relative;
+      width: calc(20% - 24px);
+      color: $color-text;
+      @include tablet-medium {
+        width: 48%;
+      }
+      h3 {
+        font-size: min(8vw, 1.6rem);
+        font-weight: 600;
+        padding: 12px 0;
+      }
+      p {
+        margin-bottom: 4px;
+      }
+      .ginfo {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+      }
+      .cart-btn {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        i {
+          font-size: 20px;
+        }
+      }
+      picture {
+        position: relative;
+        width: 100%;
+        height: auto;
+        display: block;
+        cursor: pointer;
+        img {
+          border: 1px solid $color-board;
+          border-radius: 1rem;
+          box-sizing: border-box;
+          overflow: hidden;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+      }
+    }
+  }
+  .pagination {
+    margin: 24px auto;
+    ol {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap:8px;
+    font-size: 1.4rem;
+    font-weight: 300;
+    li {
+      cursor: pointer;
+      color: #777;
+      &:hover {
+        color: #000;
+      }
+      &.active {
+        font-weight: 600;
+        color: #000;
+      }
+    }
+  }}
+}

@@ -1,0 +1,50 @@
+// 변수 선언 //
+
+/***************************
+    [ color 변수 ]
+***************************/
+$color-text: #2c2e33;
+$color-primary: #00c471;
+$color-secondary: #fe5b16;
+$color-white: #ffffff;
+$color-lightegray: #d4d4d4;
+$color-midgray: #6e7479;
+$color-board: #ddd;
+
+/***************************
+    [ background 변수 ]
+***************************/
+$bg-footer: #2f3740;
+
+//--------------------- 미디어쿼리 ---------------------//
+$breakpoint-desktop: 1400px;
+$breakpoint-tablet-large: 1200px;
+$breakpoint-tablet-medium: 1000px;
+$breakpoint-tablet-small: 760px;
+$breakpoint-mobile: 420px;
+
+@mixin desktop {
+  @media (max-width: $breakpoint-desktop) {
+    @content;
+  }
+}
+@mixin tablet-large {
+  @media (max-width: $breakpoint-tablet-large) {
+    @content;
+  }
+}
+@mixin tablet-medium {
+  @media (max-width: $breakpoint-tablet-medium) {
+    @content;
+  }
+}
+@mixin tablet-small {
+  @media (max-width: $breakpoint-tablet-small) {
+    @content;
+  }
+}
+@mixin mobile {
+  @media (max-width: $breakpoint-mobile) {
+    @content;
+  }
+}
