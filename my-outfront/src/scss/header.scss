@@ -6,9 +6,10 @@
   display: flex;
   justify-content: space-between;
   font-size: 1.4rem;
-  >div ul {
-    display: flex;
-    align-items: center;
-    padding: 1rem 0;
+  .logo{
+    img {
+      width: 110px;
+      height: auto;
+    }
   }
 }

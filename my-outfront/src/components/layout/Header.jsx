@@ -1,21 +1,31 @@
-import {memo} from "react";
-import {Link} from "react-router-dom";
+import { memo } from "react";
+import { Link } from "react-router-dom";
 import "../../scss/header.scss";
 
-const Header = memo(({goPage, loginSts, setLoginSts}) => {
-
-  const categories = ["전체", "개발프로그래밍", "게임개발", "데이터사이언스", "인공지능", "보안네트워크", "기타"]; // 강의 카테고리
+const Header = memo(({ goPage, loginSts, setLoginSts }) => {
+  const categories = [
+    "전체",
+    "개발프로그래밍",
+    "게임개발",
+    "데이터사이언스",
+    "인공지능",
+    "보안네트워크",
+    "기타",
+  ]; // 강의 카테고리
 
   // 리턴코드구역
   return (
     <header>
       <div className="header">
         <div className="logo">
-          <ul>
-            <h1>
-              <a href={process.env.PUBLIC_URL}>Logo</a>
-            </h1>
-          </ul>
+          <h1>
+            <a href={process.env.PUBLIC_URL}>
+              <img
+                src={`${process.env.PUBLIC_URL}/images/main/inflearn_logo.png`}
+                alt="logo"
+              />
+            </a>
+          </h1>
         </div>
         <div className="top-category">
           <ul>
@@ -24,13 +34,15 @@ const Header = memo(({goPage, loginSts, setLoginSts}) => {
               <ul>
                 {categories.slice(1).map((category) => (
                   <li key={category}>
-                    <a href={`${process.env.PUBLIC_URL}/#${category}`}>{category}</a>
+                    <a href={`${process.env.PUBLIC_URL}/#${category}`}>
+                      {category}
+                    </a>
                   </li>
                 ))}
               </ul>
             </li>
             <li>
-              <a href={`${process.env.PUBLIC_URL}/board`}>커뮤니티</a>
+              <Link to="/board">커뮤니티</Link>
             </li>
           </ul>
         </div>
@@ -79,4 +91,4 @@ const Header = memo(({goPage, loginSts, setLoginSts}) => {
   );
 });
 
-export {Header};
+export { Header };
