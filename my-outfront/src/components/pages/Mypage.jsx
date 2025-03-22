@@ -1,7 +1,7 @@
 // Mypage.jsx
 import React, { useEffect, useState } from "react";
 import "../../scss/mypage.scss";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import userData from "../../js/data/user_data.json";
 import reviewData from "../../js/data/review_data.json";
 
@@ -195,10 +195,10 @@ const Mypage = () => {
         {/* 내 학습 */}
         <div className="box my-edu">
           <h3>
-            <a href={`${process.env.PUBLIC_URL}/myedu`}>내 학습</a>
-            <a href={`${process.env.PUBLIC_URL}/myedu`}>
+            <Link to="/myedu">내 학습</Link>
+            <Link to="/myedu">
               <span>more</span>
-            </a>
+            </Link>
           </h3>
           <ul className="myedu-list">
             {userEduList.length > 0 ? (
@@ -255,10 +255,10 @@ const Mypage = () => {
         {/* 내 커뮤니티 게시글 */}
         <div className="box my-community">
           <h3>
-            <a href={`${process.env.PUBLIC_URL}/board`}>내 커뮤니티 게시글</a>
-            <a href={`${process.env.PUBLIC_URL}/board`}>
+            <Link to="/myedu">내 커뮤니티 게시글</Link>
+            <Link to="/myedu">
               <span>more</span>
-            </a>
+            </Link>
           </h3>
           <ul className="myboard-list">
             {userBoardPosts.length > 0 ? (
