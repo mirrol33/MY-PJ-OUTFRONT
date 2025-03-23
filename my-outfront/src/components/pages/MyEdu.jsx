@@ -133,7 +133,7 @@ function MyEdu() {
 
   return (
     <div className="my-edu-wrap">
-      <h3>내 학습</h3>
+      <h2>내 학습</h2>
       <ul className="myedu-list">
         {userEduList.length > 0 ? (
           userEduList.map((edu) => {
@@ -185,29 +185,37 @@ function MyEdu() {
       {showPopup && selectedReview && (
         <div className="review-popup">
           <div className="popup-content">
-            <h3>수강평 작성</h3>
-            <label>
-              평점:
-              <input
-                type="number"
-                name="grade"
-                min="0.5"
-                max="5"
-                step="0.5"
-                value={newReview.grade}
-                onChange={handleChange}
-              />
-            </label>
-            <label>
-              내용:
-              <textarea
-                name="text"
-                value={newReview.text}
-                onChange={handleChange}
-              />
-            </label>
-            <button onClick={saveReview}>저장</button>
-            <button onClick={() => setShowPopup(false)}>닫기</button>
+            <ul>
+              <h3>수강평 작성</h3>
+              <li>
+                <label>
+                  <span>평점</span>
+                  <input
+                    type="number"
+                    name="grade"
+                    min="0.5"
+                    max="5"
+                    step="0.5"
+                    value={newReview.grade}
+                    onChange={handleChange}
+                  />
+                </label>
+              </li>
+              <li>
+                <label>
+                  <span>내용</span>
+                  <textarea
+                    name="text"
+                    value={newReview.text}
+                    onChange={handleChange}
+                  />
+                </label>
+              </li>
+            </ul>
+            <div>
+              <button onClick={saveReview}>저장</button>
+              <button onClick={() => setShowPopup(false)}>닫기</button>
+            </div>
           </div>
         </div>
       )}

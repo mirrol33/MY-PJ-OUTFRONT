@@ -19,17 +19,33 @@
       height: 200px;
       max-width: 80vw;
       max-height: 80vw;
-      box-sizing: border-box;
-      border-radius: 50%;
-      overflow: hidden;
       display: inline-block;
       cursor: pointer;
-      border: 4px solid #fff;
-      background: #eee;
       img {
+        box-sizing: border-box;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 4px solid #fff;
+        background: #eee;
         width: 100%;
         height: 100%;
         object-fit: cover;
+      }
+      span {
+        position: absolute;
+        bottom: -20px;
+        right: 20px;
+        background-color: #ccc;
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        .fa-solid {
+          color: #fff;
+          font-size: 1.4rem;
+        }
       }
     }
     span {
@@ -179,14 +195,43 @@
 
     .popup-content {
       line-height: 1.4;
-      h3 {
-        margin-bottom: 10px;
-        font-size: 1.6rem;
-        font-weight: 600;
+      ul {
+        margin: 0 auto;
+        width: 80%;
+        h3 {
+          margin-bottom: 10px;
+          font-size: 1.6rem;
+          font-weight: 600;
+        }
+        li {
+          color: #777;
+          font-size: 1.4rem;
+          margin: 1rem 0;
+          label {
+            display: flex;
+            gap: 1%;
+          }
+          input,
+          textarea {
+            max-width: 100%;
+            border: 2px solid #ddd;
+            &:focus {
+              border-color: $color-primary;
+              outline: none;
+            }
+          }
+          input {
+            width: 40px;
+            height: 20px;
+          }
+          textarea {
+            width: 80%;
+            height: 100px;
+          }
+        }
       }
-      p {
-        margin: 5px 0;
-        font-size: 1.4rem;
+      button {
+        margin: 0 4px;
       }
     }
     .star-grade {

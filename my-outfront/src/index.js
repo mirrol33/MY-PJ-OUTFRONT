@@ -6,7 +6,6 @@ import Layout from './components/layout/Layout';
 import Main from './components/pages/Main';
 import './scss/common.scss';
 
-import Education from './components/pages/Education.jsx';
 import Community from './components/pages/Community.jsx';
 import DetailView from './components/pages/DetailView.jsx';
 import Mypage from './components/pages/Mypage.jsx';
@@ -23,8 +22,7 @@ export default function MainComponent(){
     <Routes>
       <Route path="/" element={<Layout />}>
         <Route index element={<Main />} />
-        <Route path="/detail/:id" element={<DetailView />} />
-        <Route path="education" element={<Education />} />
+        <Route path="/detail/:id" element={<DetailView />} />       
         <Route path="community" element={<Community />} />
         <Route path="mypage" element={<Mypage />} />
         <Route path="myedu" element={<MyEdu />} />

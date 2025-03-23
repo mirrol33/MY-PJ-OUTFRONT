@@ -11,6 +11,9 @@ const ProfileImage = ({ profileImg, onChange }) => (
     <label htmlFor="profile-upload">
       <picture>
         <img src={profileImg} alt="profile" />
+        <span>
+        <i class="fa-solid fa-image"></i>
+        </span>
       </picture>
     </label>
     <input
@@ -48,9 +51,7 @@ const Mypage = () => {
 
     if (!storedUserData) {
       // 로컬스토리지에 'mypage-user-data'가 없으면 user_data.json 데이터를 저장
-      console.log(
-        "로컬스토리지에 'mypage-user-data'가 없으므로, user_data.json을 추가합니다."
-      );
+      console.log("'mypage-user-data' 데이터가 없습니다~!");
       localStorage.setItem("mypage-user-data", JSON.stringify(userData));
       storedUserData = JSON.stringify(userData); // 로컬스토리지에 저장된 값을 다시 가져옴
     }
@@ -125,7 +126,7 @@ const Mypage = () => {
       ...newReview,
       uid: userInfo.uid,
       name: userInfo.unm,
-      eduId: selectedReview.eduId, // `eduId`를 추가
+      eduId: selectedReview.eduId,
     };
 
     const existingReviewIndex = storedReviews.findIndex(
@@ -287,29 +288,37 @@ const Mypage = () => {
       {showPopup && selectedReview && (
         <div className="review-popup">
           <div className="popup-content">
-            <h3>수강평 작성</h3>
-            <label>
-              평점:
-              <input
-                type="number"
-                name="grade"
-                min="0.5"
-                max="5"
-                step="0.5"
-                value={newReview.grade}
-                onChange={handleChange}
-              />
-            </label>
-            <label>
-              내용:
-              <textarea
-                name="text"
-                value={newReview.text}
-                onChange={handleChange}
-              />
-            </label>
-            <button onClick={saveReview}>저장</button>
-            <button onClick={closePopup}>닫기</button>
+            <ul>
+              <h3>수강평 작성</h3>
+              <li>
+                <label>
+                  <span>평점 </span>
+                  <input
+                    type="number"
+                    name="grade"
+                    min="0.5"
+                    max="5"
+                    step="0.5"
+                    value={newReview.grade}
+                    onChange={handleChange}
+                  />
+                </label>
+              </li>
+              <li>
+                <label>
+                  <span>내용 </span>
+                  <textarea
+                    name="text"
+                    value={newReview.text}
+                    onChange={handleChange}
+                  />
+                </label>
+              </li>
+            </ul>
+            <div>
+              <button onClick={saveReview}>저장</button>
+              <button onClick={closePopup}>닫기</button>
+            </div>
           </div>
         </div>
       )}

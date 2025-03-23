@@ -1,4 +1,4 @@
-// 강의 상세페이지 컴포넌트 : ./src/components/pages/DetailView.jsx ////
+// 강의 상세페이지 컴포넌트 : DetailView.jsx ////
 
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
@@ -7,29 +7,32 @@ import "../../scss/detail_view.scss";
 import eduData from "../../js/data/edu_data.json";
 // 리뷰 json 데이터 불러오기
 import reviewData from "../../js/data/review_data.json";
-// 로그인한 사용자의 학습 데이터 불러오기
-import userData from "../../js/data/user_data.json";
 
 const DetailView = () => {
   const { id } = useParams();
   const [edu, setEdu] = useState(null);
   const [reviews, setReviews] = useState([]); // 리뷰를 배열로 저장
   const navigate = useNavigate();
-  const [userInfo, setUserInfo] = useState(null);
-  const [userEduState, setUserEduState] = useState(null);
-  const [userEduRate, setUserEduRate] = useState(null);
+  const [userInfo, setUserInfo] = useState(null); // 로그인한 사용자 정보
+  const [userEduState, setUserEduState] = useState(null); // 로그인한 사용자 강의 정보
+  const [userEduRate, setUserEduRate] = useState(null); // 로그인한 사용자 강의 진행율
 
   useEffect(() => {
-    // 세션 스토리지에서 로그인한 사용자 정보 가져오기
+    // 세션 스토리지에서 로그인한 사용자 "minfo" 가져오기
     const storedUser = sessionStorage.getItem("minfo");
     if (storedUser) {
       const parsedUser = JSON.parse(storedUser);
       setUserInfo(parsedUser);
 
+      let storedData = localStorage.getItem("mypage-user-data");
+      let userEduData = JSON.parse(storedData);
+      console.log("userEduData", userEduData);
+
       // 로그인한 사용자의 학습 데이터 확인
-      const currentUserData = userData.find(
+      const currentUserData = userEduData.find(
         (user) => user.uid === parsedUser.uid
       );
+
       if (currentUserData) {
         const enrolledCourse = currentUserData.eduIng.find(
           (course) => course.eduId === Number(id)
@@ -71,6 +74,68 @@ const DetailView = () => {
   const formatPrice = (price) => {
     const priceNum = Number(price);
     return priceNum === 0 ? "무료" : `₩${priceNum.toLocaleString()}`;
+  };
+
+  const addEduId = () => {
+    if (!userInfo) {
+      alert("회원 로그인 후 수강신청 해주세요~!");
+      return;
+    }
+
+    console.log("현재 로그인한 사용자:", userInfo.uid);
+
+    // 로컬스토리지에서 'mypage-user-data' 불러오기
+    let storedData = localStorage.getItem("mypage-user-data");
+    let userEduData = storedData ? JSON.parse(storedData) : [];
+
+    // 현재 로그인한 사용자 정보 찾기
+    let currentUser = userEduData.find((user) => user.uid === userInfo.uid);
+
+    // 사용자가 기존 데이터에 없으면 새로 추가
+    if (!currentUser) {
+      currentUser = {
+        idx: userEduData.length + 1, // 새 유저 ID 부여
+        uid: userInfo.uid,
+        unm: userInfo.unm,
+        umail: userInfo.eml,
+        eduIng: [],
+      };
+      userEduData.push(currentUser);
+    }
+
+    // 현재 선택된 강의 정보 찾기
+    const selectedEdu = eduData.find((edu) => edu.idx == id);
+
+    if (!selectedEdu) {
+      alert("강의 정보를 찾을 수 없습니다!");
+      return;
+    }
+
+    // 이미 신청한 강의인지 확인
+    const isAlreadyEnrolled = currentUser.eduIng.some((edu) => edu.eduId == id);
+
+    if (isAlreadyEnrolled) {
+      alert("이미 신청한 강의입니다!");
+      return;
+    }
+
+    // 새로운 강의 추가
+    const newEdu = {
+      eduId: selectedEdu.idx,
+      eduName: selectedEdu.gName,
+      eduRate: "0",
+      eduState: "학습전",
+    };
+
+    // 강의 데이터 추가!!
+    currentUser.eduIng.push(newEdu);
+
+    // 업데이트된 데이터 다시 로컬스토리지에 저장
+    localStorage.setItem("mypage-user-data", JSON.stringify(userEduData));
+    alert("수강신청 완료~!");
+
+    // 내 학습 페이지로 이동!!
+    navigate("/myedu");
   };
 
   return (
@@ -123,7 +188,9 @@ const DetailView = () => {
                 </button>
               ) : (
                 <>
-                  <button className="add-edu-btn">수강 신청하기</button>
+                  <button className="add-edu-btn" onClick={addEduId}>
+                    수강 신청하기
+                  </button>
                   <button className="add-cart-btn">바구니에 담기</button>
                 </>
               )}
