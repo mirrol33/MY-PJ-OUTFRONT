@@ -109,8 +109,6 @@ const Main = () => {
             <option value="고급">고급</option>
           </select>
         </div>
-
-       
       </div>
       <ul className="list-wrap">
         {currentList.map((edu) => (
