@@ -262,25 +262,25 @@ function Read({setMode, selRecord}) {
   //////////////////////////////////
   // 리턴 코드구역 ///////////////////
   return (
-    <main className="cont">
-      <h1 className="tit">OPINION</h1>
+    <>
+      <h1 className="tit">커뮤니티</h1>
       <table className="dtblview readone">
-        <caption>OPINION : Read</caption>
+        <caption>읽기</caption>
         <tbody>
           <tr>
-            <td>Name</td>
+            <td>이름</td>
             <td>
               <input type="text" className="name" size="20" readOnly={true} defaultValue={selData.unm} />
             </td>
           </tr>
           <tr>
-            <td>Title</td>
+            <td>제목</td>
             <td>
               <input type="text" className="subject" size="60" readOnly={true} defaultValue={selData.tit} />
             </td>
           </tr>
           <tr>
-            <td>Content</td>
+            <td>내용</td>
             <td>
               <textarea className="content" cols="60" rows="10" readOnly={true} defaultValue={selData.cont}></textarea>
             </td>
@@ -299,7 +299,7 @@ function Read({setMode, selRecord}) {
                   // 리스트 모드('L')로 변경하기
                   setMode("L");
                 }}>
-                List
+                목록
               </button>
               {
                 // 로그인한 사용자가 글쓴이와 같은 아이디일 경우
@@ -310,7 +310,7 @@ function Read({setMode, selRecord}) {
                       // 수정모드로 변경하기
                       setMode("M");
                     }}>
-                    Modify
+                    수정
                   </button>
                 )
               }
@@ -325,17 +325,15 @@ function Read({setMode, selRecord}) {
               <table className="dtblview">
             <tbody>
               <tr>
-                <td>Comments</td>
+                <td>댓글</td>
                 <td>
                   <textarea className="comment-box" cols="60" rows="5"></textarea>
                   <button
                     style={{
-                      marginLeft: "10px",
-                      height: "80px",
                       verticalAlign: "35px",
                     }}
                     onClick={saveComment}>
-                    Send
+                    보내기
                   </button>
                 </td>
               </tr>
@@ -347,22 +345,25 @@ function Read({setMode, selRecord}) {
       {
         // 코멘트가 있으면 출력(상태변수로 체크!)
         commentData && (
-          <table className="dtblview">
+          <table className="dtblview comment">
             <tbody>
               {
                 // 코멘트 데이터 만큼 반복생성하기
                 commentData.map((v, i) => (
                   <tr key={i}>
                     {/* (1) 코멘트 쓴이 이름 */}
-                    <td style={{fontSize: "16px", fontWeight: "normal"}}>
+                    <td>
                       {v.unm}
                       <br />
                       {myCon.loginSts && myCon.loginSts.uid === v.uid && (
-                        <>
+                        <div style={{
+                          display: 'flex',
+                          justifyContent: 'center',
+                        }}>
                           <button
                             // 클릭시 지울 idx를 삭제함수에 보내줌!
                             onClick={() => deleteComment(v.idx)}>
-                            Delete
+                            <i class="fa-solid fa-trash"></i>
                           </button>
 
                           {/* 수정버튼은 수정모드에서 'send'버튼변경 */}
@@ -374,7 +375,7 @@ function Read({setMode, selRecord}) {
                                 onClick={() => {
                                   saveModifiedComment(v.idx);
                                 }}>
-                                Send
+                                <i class="fa-solid fa-comment"></i>
                               </button>
                             ) : (
                               <button
@@ -382,17 +383,19 @@ function Read({setMode, selRecord}) {
                                 onClick={() => {
                                   modifyComment(v.idx);
                                 }}>
-                                Modify
+                                <i class="fa-solid fa-pencil"></i>
                               </button>
                             )
                           }
-                        </>
+                        </div>
                       )}
                     </td>
                     {/* (2) 코멘트 내용
                     -> textarea가 수정모드일때는 입력상태로 변경됨!
                     */}
-                    <td>
+                    <td style={{
+                      width:"80%",
+                    }}>
                       <textarea
                         className="comment-view-box"
                         // 내용에 따른 높이값 정보를 참조변수에 노출
@@ -427,12 +430,10 @@ function Read({setMode, selRecord}) {
                         }}></textarea>
                     </td>
                     {/* (3) 코멘트 날짜 */}
-                    <td
-                      style={{
-                        fontSize: "16px",
-                        fontWeight: "normal",
-                        width: "20%",
-                      }}>
+                    <td style={{
+                      width: "10%",
+                      fontSize: "1.4rem",
+                    }}>
                       {v.date}
                     </td>
                   </tr>
@@ -442,7 +443,7 @@ function Read({setMode, selRecord}) {
           </table>
         )
       }
-    </main>
+    </>
   );
 }
 

@@ -1,10 +1,18 @@
 /* 게시판 모듈용 CSS - board.css  */
+@import "../variables";
 
 /* CSS Document */
 
+.cont {
+  position: relative;
+  width: 96%;
+  max-width:1440px;
+  margin: 0 auto;
+}
+
  h1.tit {
   text-align: center;
-  font-size: 2rem;
+  font-size: 2.4rem;
   font-weight: bold;
   margin-top: 80px;
  } 
@@ -16,6 +24,11 @@
   margin: 0 auto;
   padding: 20px 0px 10px;
   box-sizing: border-box;
+  display: flex;
+  @include tablet-medium {
+    display: block;
+  }
+
   select, input {
     padding: 8px 12px;
     border: 1px solid #777;
@@ -36,21 +49,18 @@
   /*테이블전체*/
   text-align: center;
   /*텍스트 가로 중앙*/
-  font-family: "Ubuntu Condensed", sans-serif;
   font-size: 14px;
   border-collapse: collapse;
-  width: 96%;
-  max-width: 1440px;
   margin: 0 auto;
+  width: 100%;
 }
 
 .dtbl caption,
 .dtblview caption {
   /*테이블 타이틀*/
-  font-family: "Ubuntu Condensed", sans-serif;
-  font-size: 24px;
-  font-weight: bold;
+  font-size: 2rem;
   /*글자두께*/
+  font-weight: 600;
   color: #333;
   padding: 10px 0;
 }
@@ -151,33 +161,45 @@
 
 /* 내용보기 */
 .dtblview {
-  font-family: "Ubuntu Condensed", sans-serif;
   font-size: 34px;
   border-collapse: collapse;
-  width: 750px;
+  width: 100%;
   margin: 20px auto;
   border-top: 2px solid #999;
   /*두종색*/
   border-bottom: 2px solid #999;
 }
+.dtblview td {
+  width: auto;
+  font-size: 1.6rem;
+}
+.dtblview input,
+.dtblview textarea {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  width: 90%;
+  font-size: 1.4rem;
+}
+
 /*첫째열*/
 .dtblview td:first-child {
   width: 100px;
 }
 /*둘째열*/
 .dtblview td:last-child {
-  width: 650px;
+  width: auto;
 }
 
 .dtblview td {
   border-bottom: 1px solid #ccc;
-  padding: 8px;
+  padding: 10px;
 }
 
 .dtblview td:first-child {
-  width: 200px;
-  background-color: #e0e0e0;
+  width: 120px;
+  background-color: #f1f1f1;
   text-align: center;
+  vertical-align: middle;
 }
 
 /* 추가 첨부파일링크 */
@@ -192,6 +214,15 @@
   color: #f00;
 }
 
+.dtblview td button {
+  background: #fff;
+  display: flex;
+  align-items: center;
+  outline: 1px solid #ccc;
+  padding: 10px;
+  margin: 10px 0;
+}
+
 /* 버튼그룹 */
 .btngrp button {
   border-radius: 25px;
@@ -199,7 +230,6 @@
   background-color: #fff;
   color: #000;
   font-weight: bold;
-  font-family: "Ubuntu Condensed", sans-serif;
   font-size: 15px;
   transition: 0.3s;
   margin-top: 20px;
@@ -218,7 +248,7 @@
 @media screen and (max-width: 700px) {
   /* 보기 모드 공통 */
   .cont .dtblview {
-    width: 90vw;
+    width: 100%;
   }
   .cont .dtblview td {
     width: auto;
@@ -226,6 +256,15 @@
   }
   .cont .dtblview input,
   .cont .dtblview textarea {
-    width: calc(90vw - 64px);
+    width: 95%;
+  }
+}
+
+.comment td {
+  width: auto;
+  text-align: center;
+  vertical-align: middle;
+  textarea {
+    width: 90%;
   }
 }
