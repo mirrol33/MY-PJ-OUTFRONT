@@ -3,9 +3,6 @@
 import React, { Fragment, useContext } from "react";
 import { dCon } from "../dCon";
 
-// 제이쿼리 불러오기 ///
-import $ from "jquery";
-
 function List({
   selData, // 선택된 배열데이터 전달
   setMode, // 모든 변경 상태변수 setter
@@ -24,21 +21,18 @@ function List({
   setOrder, // 정렬 상태변수 setter
   sortCta, // 정렬기준 상태변수 getter
   setSortCta, // 정렬기준 상태변수 setter
-  initVariables, // 변수초기화함수
 }) {
   // 전역 컨텍스트 API 사용하기!!
   const myCon = useContext(dCon);
   // console.log('List에서 loginSts:',myCon.loginSts);
-
-  console.log("토탈 카운트:", totalCount);
 
   // [ 페이징 관련 변수값 셋팅하기 ] ////
 
   // 1. 페이징 개수 : 전체 레코드수 / 페이지당 개수
   // -> 나머지가 있으면 페이지를 하나더해준다!
   let pagingCount = Math.floor(totalCount.current / unitSize);
-  // console.log("전체 레코드수 / 페이지당 개수:", pagingCount);
-  // console.log("나머지연산:", totalCount.current % unitSize);
+  console.log("전체 레코드수 / 페이지당 개수:", pagingCount);
+  console.log("나머지연산:", totalCount.current % unitSize);
 
   // 2. 나머지가 있으면 페이징 개수 1증가!
   // 앞수 % 뒷수 = 0 이면 나누어 떨어짐!
@@ -56,7 +50,7 @@ function List({
     pgPgLimit++;
   } /// if ///
 
-  // console.log("페이징의 페이징 한계수:", pgPgLimit);
+  console.log("페이징의 페이징 한계수:", pgPgLimit);
 
   /*********************************** 
         페이징코드 리턴 함수
@@ -90,8 +84,7 @@ function List({
           <a
             href="#"
             title="First Paging Section"
-            onClick={(e) => {
-              e.preventDefault();
+            onClick={() => {
               // (1) 페이징의 페이징번호 첫페이징번호로 변경!
               pgPgNum.current = 1;
               // (2) 페이지 번호도 첫 페이지번호로 변경!
@@ -104,8 +97,7 @@ function List({
           <a
             href="#"
             title="Previous Paging Section"
-            onClick={(e) => {
-              e.preventDefault();
+            onClick={() => {
               // (1) 페이징의 페이징번호 감소
               pgPgNum.current--;
               // (2) 이전 페이징의 페이징 첫 페이지번호로
@@ -139,8 +131,7 @@ function List({
             ) : (
               <a
                 href="#"
-                onClick={(e) => {
-                  e.preventDefault();
+                onClick={() => {
                   // 페이지번호 업데이트하기
                   setPageNum(i + 1);
                 }}
@@ -167,8 +158,7 @@ function List({
           <a
             href="#"
             title="Next Paging Section"
-            onClick={(e) => {
-              e.preventDefault();
+            onClick={() => {
               // (1) 페이징의 페이징번호 증가
               pgPgNum.current++;
               // (2) 다음 페이징의 페이징 첫 페이지번호로
@@ -184,8 +174,7 @@ function List({
           <a
             href="#"
             title="Last Paging Section"
-            onClick={(e) => {
-              e.preventDefault();
+            onClick={() => {
               // (1) 페이징의 페이징번호 맨끝번호로 변경!
               pgPgNum.current = pgPgLimit;
               // (2) 다음 페이징의 페이징 첫 페이지번호로
@@ -214,22 +203,53 @@ function List({
 
   // 리턴 코드구역 ////////////////////
   return (
-    <main className="cont">
-      <h1 className="tit">OPINION</h1>
+    <>
+      <h1 className="tit">커뮤니티</h1>
       <div className="selbx">
+        <select name="cta" id="cta" className="cta">
+          <option value="tit">제목검색</option>
+          <option value="cont">내용검색</option>
+          <option value="unm">글쓴이검색</option>
+        </select>
+        
+        <input
+          id="stxt"
+          type="text"
+          maxLength="50"
+          defaultValue={keyword.kw}
+          onKeyUp={(e) => {
+            // 엔터를 친 경우 ///
+            if (e.key === "Enter") e.target.nextElementSibling.click();
+            // 다음 형제요소인 버튼 클릭이벤트 발생!
+
+            // 페이지, 페이징 모두 초기화
+            setPageNum(1);
+            pgPgNum.currnt = 1;
+          }}
+        />
+        <button className="sbtn" onClick={searchFn}>
+          검색
+        </button>       
+
         {/* 검색기준 선택박스 */}
         <select
-          name="cta"
-          id="cta"
-          className="cta"
-          /* 기본값을 상태변수 검색기준값으로
-          설정해놓으면 다시 리스트가 리랜더링 되어도
-          기존값을 그대로 유지한다! */
-          defaultValue={keyword.cta}
+          name="sort_cta"
+          id="sort_cta"
+          className="sort_cta"
+          value={sortCta}
+          onChange={(e) => {
+            // 정렬기준 변경하기
+            setSortCta(e.target.value);
+            // 변경된 값 반영하기
+            e.target.value = sortCta;
+            // 첫 페이지로 이동
+            setPageNum(1);
+            // 페이징의 페이징구역 초기화
+            pgPgNum.current = 1;
+          }}
         >
-          <option value="tit">Title</option>
-          <option value="cont">Contents</option>
-          <option value="unm">Writer</option>
+          <option value="date">날짜</option>
+          <option value="tit">제목</option>
         </select>
         <select
           name="sel"
@@ -247,127 +267,56 @@ function List({
             pgPgNum.current = 1;
           }}
         >
-          <option value="1">Descending</option>
-          <option value="-1">Ascending</option>
-        </select>
-        <input
-          id="stxt"
-          type="text"
-          maxLength="50"
-          defaultValue={keyword.kw}
-          onKeyUp={(e) => {
-            // 엔터를 친 경우 ///
-            if (e.key === "Enter") e.target.nextElementSibling.click();
-            // 다음 형제요소인 버튼 클릭이벤트 발생!
-
-            // 페이지, 페이징 모두 초기화
-            setPageNum(1);
-            pgPgNum.currnt = 1;
-          }}
-        />
-        {/* 검색버튼 */}
-        <button className="sbtn" onClick={searchFn}>
-          Search
-        </button>
-        {/* 초기화버튼 */}
-        <button
-          className="sbtn"
-          onClick={() => {
-            // 1.검색어 비우기
-            $("#stxt").val("");
-            // 2.검색선택 초기화
-            $("#cta").val("tit");
-            // 3.초기화 함수호출
-            initVariables();
-          }}
-        >
-          Reset
-        </button>
-
-        {/* 정렬기준 선택박스 */}
-        <select
-          name="sort_cta"
-          id="sort_cta"
-          className="sort_cta"
-          style={{
-            float: "right",
-            translate: "0 5px",
-          }}
-          value={sortCta}
-          onChange={(e) => {
-            // 정렬기준 변경하기
-            setSortCta(e.target.value);
-            // 변경된 값 반영하기
-            e.target.value = sortCta;
-            // 첫 페이지로 이동
-            setPageNum(1);
-            // 페이징의 페이징구역 초기화
-            pgPgNum.current = 1;
-          }}
-        >
-          <option value="date">Recent</option>
-          <option value="tit">Title</option>
+          <option value="1">내림차순</option>
+          <option value="-1">오름차순</option>
         </select>
       </div>
       <table className="dtbl" id="board">
         <thead>
           <tr>
-            <th>Number</th>
-            <th>Title</th>
-            <th>Writer</th>
-            <th>Date</th>
-            <th>Hits</th>
+            <th>순번</th>
+            <th>제목</th>
+            <th>글쓴이</th>
+            <th>날짜</th>
+            <th>조회수</th>
           </tr>
         </thead>
         <tbody>
-          {
-            // 데이터가 0이 아닐경우 map순회 출력하기
-            totalCount.current > 0 ? (
-              selData.map((v, i) => (
-                <tr key={i}>
-                  <td>
-                    {
-                      // 페이징 시작번호 더하기
-                      // -> 자동순번 + (단위수 * (페이지번호-1))
-                      i + 1 + unitSize * (pageNum - 1)
-                    }
-                  </td>
-                  <td>
-                    <a
-                      href="#"
-                      onClick={(e) => {
-                        // 기본이동막기
-                        e.preventDefault();
-                        // 글보기모드('R')로 변경하기
-                        setMode("R");
-                        // 해당 데이터 참조변수에 저장하기
-                        selRecord.current = v;
-                      }}
-                    >
-                      {v.tit}
-                    </a>
-                  </td>
-                  <td>{v.unm}</td>
-                  <td>{v.date}</td>
-                  <td>{v.cnt}</td>
-                </tr>
-              ))
-            ) : (
-              // 데이터가 0일 경우 출력 ////////////
-              <tr>
-                <td colSpan="5">No search results</td>
-              </tr>
-            )
-          }
+          {selData.map((v, i) => (
+            <tr key={i}>
+              <td>
+                {
+                  // 페이징 시작번호 더하기
+                  // -> 자동순번 + (단위수 * (페이지번호-1))
+                  i + 1 + unitSize * (pageNum - 1)
+                }
+              </td>
+              <td>
+                <a
+                  href="#"
+                  onClick={(e) => {
+                    // 기본이동막기
+                    e.preventDefault();
+                    // 글보기모드('R')로 변경하기
+                    setMode("R");
+                    // 해당 데이터 참조변수에 저장하기
+                    selRecord.current = v;
+                  }}
+                >
+                  {v.tit}
+                </a>
+              </td>
+              <td>{v.unm}</td>
+              <td>{v.date}</td>
+              <td>{v.cnt}</td>
+            </tr>
+          ))}
         </tbody>
         {/* 페이징 하단파트 */}
         <tfoot>
           <tr>
             <td colSpan="5" className="paging">
-              {
-                // 결과 데이터가 0이 아닐경우 페이징 출력
-                totalCount.current > 0 && pagingCode()
-              }
+              {pagingCode()}
             </td>
           </tr>
         </tfoot>
@@ -394,7 +343,7 @@ function List({
           </tr>
         </tbody>
       </table>
-    </main>
+    </>
   );
 }
 
