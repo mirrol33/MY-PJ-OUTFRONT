@@ -206,10 +206,19 @@ function List({
     <>
       <h1 className="tit">커뮤니티</h1>
       <div className="selbx">
-        <select name="cta" id="cta" className="cta">
-          <option value="tit">제목검색</option>
-          <option value="cont">내용검색</option>
-          <option value="unm">글쓴이검색</option>
+        {/* 검색기준 선택박스 */}
+        <select
+          name="cta"
+          id="cta"
+          className="cta"
+          /* 기본값을 상태변수 검색기준값으로
+          설정해놓으면 다시 리스트가 리랜더링 되어도
+          기존값을 그대로 유지한다! */
+          defaultValue={keyword.cta}
+        >
+          <option value="tit">Title</option>
+          <option value="cont">Contents</option>
+          <option value="unm">Writer</option>
         </select>
         
         <input
@@ -228,8 +237,22 @@ function List({
           }}
         />
         <button className="sbtn" onClick={searchFn}>
-          검색
-        </button>       
+          Search
+        </button>
+        {/* 초기화버튼 */}
+        <button
+          className="sbtn"
+          onClick={() => {
+            // 1.검색어 비우기
+            $("#stxt").val("");
+            // 2.검색선택 초기화
+            $("#cta").val("tit");
+            // 3.초기화 함수호출
+            initVariables();
+          }}
+        >
+          Reset
+        </button>
 
         {/* 검색기준 선택박스 */}
         <select
