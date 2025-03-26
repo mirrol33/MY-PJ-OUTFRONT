@@ -91,7 +91,7 @@ function List({
               setPageNum(1);
             }}
           >
-            «{" "}
+           <i class="fa-solid fa-backward"></i>
           </a>
           {/* 이전 페이징으로 이동하기 */}
           <a
@@ -106,7 +106,7 @@ function List({
               // 이전 페이징 첫번호는 (시작값-(페페사이즈-1)) 이다!
             }}
           >
-            ◀{" "}
+            <i class="fa-solid fa-arrow-left"></i>
           </a>
         </Fragment>
       );
@@ -143,7 +143,7 @@ function List({
           {
             // 마지막 번호 뒤에 바(|)는 출력안되게함!
             // 동시에 페이징 마지막 번호가 아닐때만 출력!
-            i < limitNum - 1 && i + 1 !== pagingCount && " | "
+            i < limitNum - 1 && i + 1 !== pagingCount && ""
           }
         </Fragment>
       );
@@ -167,8 +167,8 @@ function List({
               // 다음 페이징 첫번호는 (한계값+1) 이다!
             }}
           >
-            {" "}
-            ▶
+           
+            <i class="fa-solid fa-arrow-right"></i>
           </a>
           {/* 맨끝 페이징 이동하기 */}
           <a
@@ -186,8 +186,8 @@ function List({
               // 더하기 1하면 다음 페이징의 첫번째 페이지번호임!
             }}
           >
-            {" "}
-            »
+            
+            <i class="fa-solid fa-forward"></i>
           </a>
         </Fragment>
       );
@@ -206,19 +206,10 @@ function List({
     <>
       <h1 className="tit">커뮤니티</h1>
       <div className="selbx">
-        {/* 검색기준 선택박스 */}
-        <select
-          name="cta"
-          id="cta"
-          className="cta"
-          /* 기본값을 상태변수 검색기준값으로
-          설정해놓으면 다시 리스트가 리랜더링 되어도
-          기존값을 그대로 유지한다! */
-          defaultValue={keyword.cta}
-        >
-          <option value="tit">Title</option>
-          <option value="cont">Contents</option>
-          <option value="unm">Writer</option>
+        <select name="cta" id="cta" className="cta">
+          <option value="tit">제목검색</option>
+          <option value="cont">내용검색</option>
+          <option value="unm">글쓴이검색</option>
         </select>
         
         <input
@@ -237,22 +228,8 @@ function List({
           }}
         />
         <button className="sbtn" onClick={searchFn}>
-          Search
-        </button>
-        {/* 초기화버튼 */}
-        <button
-          className="sbtn"
-          onClick={() => {
-            // 1.검색어 비우기
-            $("#stxt").val("");
-            // 2.검색선택 초기화
-            $("#cta").val("tit");
-            // 3.초기화 함수호출
-            initVariables();
-          }}
-        >
-          Reset
-        </button>
+          검색
+        </button>       
 
         {/* 검색기준 선택박스 */}
         <select
