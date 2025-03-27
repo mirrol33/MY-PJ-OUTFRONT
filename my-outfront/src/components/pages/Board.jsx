@@ -156,21 +156,20 @@ function Board() {
       // 오름차순은 -1 * order변수값이 -1일 경우
       //
       .sort((a, b) =>
-        a[sortCta] > b[sortCta]
+        a[sortCta] > b[sortCta] 
           ? -1 * order
           : a[sortCta] < b[sortCta]
           ? 1 * order
-          : // 하위조건추가 : 두값이 같지않은가?
-          a[sortCta] !== b[sortCta]
-          ? // 같지 않으면 0
-            0
-          : // 그밖에 두 값이 같은경우는?
+          // 하위조건추가 : 두값이 같지않은가?
+          : a[sortCta] !== b[sortCta]
+          // 같지 않으면 0
+          ? 0
+          // 그밖에 두 값이 같은경우는?
           // idx항목으로 오름/내림차순정렬
-          a.idx > b.idx
+          : a.idx > b.idx
           ? -1 * order
-          : a[sortCta] < b[sortCta]
-          ? 1 * order
-          : 0
+          : a.idx < b.idx
+          ? 1 * order : 0
       );
   } ///// else : 검색어가 없는 경우 ////////
 
