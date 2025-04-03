@@ -1,8 +1,7 @@
 @import "./variables";
 
 .mypage-wrap {
-  margin: 40px auto 80px;
-  max-width: 1440px;
+  margin: 80px auto;  
   .mypage-top {
     text-align: center;
     padding: 40px 0;
@@ -75,12 +74,15 @@
     margin: 0;
   }
   .mypage-contents {
+    margin: 0 auto;
+    padding: 24px;
+    box-sizing: border-box;
+    max-width: 1440px;
     display: flex;
     gap: 5%;
     @include tablet-medium {
       display: block;
       gap: 0;
-      padding: 24px;
     }
     .box {
       width: 50%;

@@ -224,7 +224,7 @@ function Board() {
 
   // 리턴 코드구역 /////////////////
   return (
-    <>
+    <div className="board-wrap">
       {
         // [1] 리스트 모드 출력하기 : mode -> "L" ////
         mode === "L" && (
@@ -287,7 +287,7 @@ function Board() {
           />
         )
       }
-    </>
+    </div>
   );
 }
 

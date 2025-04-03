@@ -1,38 +1,85 @@
 @import "./variables";
+
 .header {
-  margin: 0 auto;
+  position: fixed;
+  top: 0;
+  z-index: 1;
+  background-color: #fff;
   width: 100%;
-  max-width: 1440px;
-  display: flex;
-  justify-content: space-between;
-  font-size: 1.4rem;
-  .logo{
-    img {
-      width: 110px;
-      height: auto;
-    }
-  }
-  .main-category {
+  padding: 1.8rem 0;
+  border-bottom: 1px solid #eee;
+  box-sizing: border-box;
+  > ul {
+    margin: 0 auto;
+    width: 100%;
+    max-width: 1440px;
+    padding: 0 24px;
+    box-sizing: border-box;
+    font-size: 1.4rem;
     display: flex;
+    align-items: center;
     gap: 2rem;
-    
+
+    .logo {
+      img {
+        width: 110px;
+        height: auto;
+      }
+    }
+
+    .top-category {
+      position: relative;
+    }
+    .main-category {
+      display: flex;
+      gap: 2rem;
+    }
     .sub-category {
       position: absolute;
-      border: 1px solid #ddd;
-      padding: 1.6rem;
+      top: calc(100% + 22px); /* 상위 메뉴 바로 아래 */
+      left: -20px;
+      padding: 20px;
       display: none;
+      background-color: #fff;
+      border: 1px solid #eee;
+      box-sizing: border-box;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      z-index: 1;
+
+      /* 화살표 모양 */
+      &::after {
+        content: "";
+        position: absolute;
+        top: -10px; /* 상단과 겹치지 않도록 */
+        left: 20px; /* 화살표 위치 */
+        border-left: 10px solid transparent;
+        border-right: 10px solid transparent;
+        border-bottom: 10px solid #ddd; /* 면 색상 */
+      }
+
       &.on {
         display: block;
-        z-index: 1;
-        background-color: #fff;
       }
       li {
         margin-bottom: 1.2rem;
         &:last-child {
           margin-bottom: 0;
         }
+        &.active {
+          font-weight: 600;
+        }
       }
-      
+    }
+    a {
+      white-space: nowrap;
+      &:hover {
+        color: $color-primary;
+        font-weight: 600;
+      }
+    }
+    .member-nav ul {
+      display: flex;
+      gap: 2rem;
     }
   }
 }
