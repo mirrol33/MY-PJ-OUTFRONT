@@ -12,4 +12,27 @@
       height: auto;
     }
   }
+  .main-category {
+    display: flex;
+    gap: 2rem;
+    
+    .sub-category {
+      position: absolute;
+      border: 1px solid #ddd;
+      padding: 1.6rem;
+      display: none;
+      &.on {
+        display: block;
+        z-index: 1;
+        background-color: #fff;
+      }
+      li {
+        margin-bottom: 1.2rem;
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+      
+    }
+  }
 }
