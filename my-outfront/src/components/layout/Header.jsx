@@ -76,22 +76,22 @@ const Header = memo(({goPage, loginSts, setLoginSts}) => {
               <ul>
                 <li>
                   <Link to="/login">
-                    <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                    <i class="fa-solid fa-arrow-right-to-bracket" title="로그인"></i>
                   </Link>
                 </li>
                 <li>
                   <Link to="/join">
-                    <i class="fa-solid fa-user-plus"></i>
+                    <i class="fa-solid fa-user-plus" title="회원가입"></i>
                   </Link>
                 </li>
                 <li>
                   <Link to="/mypage">
-                    <i class="fa-solid fa-user"></i>
+                    <i class="fa-solid fa-user" title="마이페이지"></i>
                   </Link>
                 </li>
                 <li>
                   <Link to="/cartlist">
-                    <i className="fa-solid fa-cart-shopping"></i>
+                    <i className="fa-solid fa-cart-shopping" title="장바구니"></i>
                   </Link>
                 </li>
               </ul>
@@ -108,17 +108,17 @@ const Header = memo(({goPage, loginSts, setLoginSts}) => {
                       goPage("/");
                     }}
                     className="logout">
-                    <i class="fa-solid fa-arrow-up-from-bracket"></i>
+                    <i class="fa-solid fa-arrow-up-from-bracket" title="로그아웃"></i>
                   </a>
                 </li>
                 <li>
                   <Link to="/mypage">
-                    <i class="fa-solid fa-user"></i>
+                    <i class="fa-solid fa-user" title="마이페이지"></i>
                   </Link>
                 </li>
                 <li>
                   <Link to="/cartlist">
-                    <i className="fa-solid fa-cart-shopping"></i>
+                    <i className="fa-solid fa-cart-shopping" title="장바구니"></i>
                   </Link>
                 </li>
               </ul>

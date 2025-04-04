@@ -99,6 +99,9 @@ const Main = () => {
             <a className="cart-btn" href="#none">
               <i className="fa-solid fa-cart-shopping"></i>
             </a>
+            <a className="heart-btn" href="#none">
+            <i class="fa-solid fa-heart"></i>
+            </a>
           </li>
         ))}
       </ul>

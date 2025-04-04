@@ -140,7 +140,20 @@
         right: 0;
         bottom: 0;
         i {
-          font-size: 20px;
+          font-size: 1.8rem;
+          color: #ccc;
+          &:hover {
+            color: $color-primary;
+          }
+        }
+      }
+      .heart-btn {
+        i {
+          font-size: 1.8rem;
+          color: #ccc;
+          &:hover {
+            color: $color-primary;
+          }
         }
       }
       picture {

@@ -9,6 +9,7 @@
   padding: 1.8rem 0;
   border-bottom: 1px solid #eee;
   box-sizing: border-box;
+  box-shadow: 0 0 4px rgba(0,0,0,0.1);
   > ul {
     position: relative;
     margin: 0 auto;
@@ -89,7 +90,7 @@
   }
   .search-area {
     position: absolute;
-    right: 0;
+    right: 24px;
     input {
       padding: 0.8rem;
       border: 1px solid #ddd;
