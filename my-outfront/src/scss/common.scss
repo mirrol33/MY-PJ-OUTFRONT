@@ -1,4 +1,5 @@
 @import './reset';
+@import "./variables";
 // ./bublic/index.html 파일에서 웹폰트 불러옴!
 // @import './core'; 필요없음!!
 
@@ -16,12 +17,21 @@ button {
     border: none;
 }
 
-.footer {
-    width: 100%;
-    margin: 0 auto;
-    text-align: center;
-    background-color: #333;
-    color: #fff;
-    padding: 2.4rem 0;
-    font-size: 1.2rem;
+footer {
+    background-color: $bg-footer;
+    .footer {
+        width: 100%;
+        max-width: 1440px;
+        box-sizing: border-box;
+        margin: 0 auto;
+        color: #fff;
+        font-size: 1.2rem;
+        display: flex;
+        justify-content: space-between;
+        padding: 2.4rem 24px;
+        @include tablet-medium {
+            width: 96%;
+            padding: 2.4rem 0;
+        }
+    }
 }
