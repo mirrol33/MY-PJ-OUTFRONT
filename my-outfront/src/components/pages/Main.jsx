@@ -138,13 +138,13 @@ const Main = () => {
               onClick={() => handlePageChange(1)}
               className={currentPage === 1 ? "disabled" : ""}
               style={{ display: currentPage === 1 ? "none" : "inline-block" }}>
-              ⏮ 처음
+              <i class="fa-solid fa-backward"></i> 
             </li>
             <li
               onClick={() => handlePageChange(currentPage - 1)}
               className={currentPage === 1 ? "disabled" : ""}
               style={{ display: currentPage === 1 ? "none" : "inline-block" }}>
-              ◀
+              <i class="fa-solid fa-arrow-left"></i>
             </li>
             {[...Array(totalPages)].map((_, i) => (
               <li
@@ -160,7 +160,7 @@ const Main = () => {
               style={{
                 display: currentPage === totalPages ? "none" : "inline-block",
               }}>
-              ▶
+              <i class="fa-solid fa-arrow-right"></i>
             </li>
             <li
               onClick={() => handlePageChange(totalPages)}
@@ -168,7 +168,7 @@ const Main = () => {
               style={{
                 display: currentPage === totalPages ? "none" : "inline-block",
               }}>
-              마지막 ⏭
+              <i class="fa-solid fa-forward"></i>
             </li>
           </ol>
         </div>

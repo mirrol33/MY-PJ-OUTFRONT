@@ -6,13 +6,13 @@ import Layout from './components/layout/Layout';
 import Main from './components/pages/Main';
 import './scss/common.scss';
 
-import Community from './components/pages/Community.jsx';
 import DetailView from './components/pages/DetailView.jsx';
 import Mypage from './components/pages/Mypage.jsx';
 import Login from './components/pages/Login.jsx';
 import Join from './components/pages/Join.jsx';
 import MyEdu from './components/pages/MyEdu.jsx';
 import Board from './components/pages/Board.jsx';
+import CartList from './components/modules/CartList.jsx';
 
 // 메인 컴포넌트 ////////////////////////////
 export default function MainComponent(){
@@ -22,12 +22,12 @@ export default function MainComponent(){
     <Routes>
       <Route path="/" element={<Layout />}>
         <Route index element={<Main />} />
-        <Route path="/detail/:id" element={<DetailView />} />       
-        <Route path="community" element={<Community />} />
+        <Route path="/detail/:id" element={<DetailView />} />
+        <Route path="cartlist" element={<CartList />} />
         <Route path="mypage" element={<Mypage />} />
         <Route path="myedu" element={<MyEdu />} />
         <Route path="login" element={<Login />} />
-        <Route path="join" element={<Join />} />        
+        <Route path="join" element={<Join />} />
         <Route path="board" element={<Board />} />
       </Route>
     </Routes>

@@ -2,9 +2,11 @@ import React from 'react';
 
 function FooterArea(props) {
   return (
-    <div>
-      푸터영역
-    </div>
+    <footer>
+      <div className='footer'>
+        <p>@2025 All Rights Reserved.</p>
+      </div>
+    </footer>
   );
 }
 

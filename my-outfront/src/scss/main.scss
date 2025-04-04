@@ -172,13 +172,22 @@
       font-weight: 300;
       li {
         cursor: pointer;
-        color: #777;
+        color: $color-midgray;
+        font-size: 1.2rem;
+
+        padding: 4px 8px;
+        background-color: #fff;
+        border-radius: 4px;
+        outline: 1px solid #ccc;
         &:hover {
           color: #000;
         }
         &.active {
           font-weight: 600;
-          color: #000;
+          color: #fff;
+          background-color: $color-primary;
+          outline: 1px solid $color-primary;
+          padding: 4px 8px;
         }
       }
     }

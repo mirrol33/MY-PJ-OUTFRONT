@@ -83,13 +83,13 @@ const Header = memo(({ goPage, loginSts, setLoginSts }) => {
             {!loginSts && (
               <ul>
                 <li>
-                  <Link to="/login">로그인</Link>
+                  <Link to="/login"><i class="fa-solid fa-arrow-right-to-bracket"></i></Link>
                 </li>
                 <li>
-                  <Link to="/join">회원가입</Link>
+                  <Link to="/join"><i class="fa-solid fa-user-plus"></i></Link>
                 </li>
                 <li>
-                  <Link to="/mypage">마이페이지</Link>
+                  <Link to="/mypage"><i class="fa-solid fa-user"></i></Link>
                 </li>
                 <li>
                   <Link to="/cartlist">
@@ -110,11 +110,11 @@ const Header = memo(({ goPage, loginSts, setLoginSts }) => {
                       goPage("/");
                     }}
                     className="logout">
-                    로그아웃
+                    <i class="fa-solid fa-arrow-up-from-bracket"></i>
                   </a>
                 </li>
                 <li>
-                  <Link to="/mypage">마이페이지</Link>
+                  <Link to="/mypage"><i class="fa-solid fa-user"></i></Link>
                 </li>
                 <li>
                   <Link to="/cartlist">
