@@ -1,18 +1,11 @@
-import { memo, useEffect } from "react";
-import { Link } from "react-router-dom";
+import {memo, useEffect, useState} from "react";
+import {Link} from "react-router-dom";
 import "../../scss/header.scss";
 import $ from "jquery";
 
-const Header = memo(({ goPage, loginSts, setLoginSts }) => {
-  const eduCate = [
-    "전체",
-    "개발프로그래밍",
-    "게임개발",
-    "데이터사이언스",
-    "인공지능",
-    "보안네트워크",
-    "기타",
-  ]; // 강의 카테고리
+const Header = memo(({goPage, loginSts, setLoginSts}) => {
+  const [searchKeyword, setSearchKeyword] = useState("");
+  const eduCate = ["전체", "개발프로그래밍", "게임개발", "데이터사이언스", "인공지능", "보안네트워크", "기타"]; // 강의 카테고리
 
   useEffect(() => {
     const $mainMenu = $(".main-category > li:eq(0) > a");
@@ -45,6 +38,10 @@ const Header = memo(({ goPage, loginSts, setLoginSts }) => {
     };
   }, []);
 
+  const handleSearch = () => {
+    goPage("search", { state: { keyword: searchKeyword } });
+  };
+
   // 리턴코드구역
   return (
     <header>
@@ -53,10 +50,7 @@ const Header = memo(({ goPage, loginSts, setLoginSts }) => {
           <div>
             <h1 className="logo">
               <a href={process.env.PUBLIC_URL}>
-                <img
-                  src={`${process.env.PUBLIC_URL}/images/main/inflearn_logo.png`}
-                  alt="logo"
-                />
+                <img src={`${process.env.PUBLIC_URL}/images/main/inflearn_logo.png`} alt="logo" />
               </a>
             </h1>
           </div>
@@ -72,9 +66,7 @@ const Header = memo(({ goPage, loginSts, setLoginSts }) => {
             <ul className="sub-category">
               {eduCate.map((category) => (
                 <li key={category}>
-                  <a href={`${process.env.PUBLIC_URL}/#${category}`}>
-                    {category}
-                  </a>
+                  <a href={`${process.env.PUBLIC_URL}/#${category}`}>{category}</a>
                 </li>
               ))}
             </ul>
@@ -83,13 +75,19 @@ const Header = memo(({ goPage, loginSts, setLoginSts }) => {
             {!loginSts && (
               <ul>
                 <li>
-                  <Link to="/login"><i class="fa-solid fa-arrow-right-to-bracket"></i></Link>
+                  <Link to="/login">
+                    <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                  </Link>
                 </li>
                 <li>
-                  <Link to="/join"><i class="fa-solid fa-user-plus"></i></Link>
+                  <Link to="/join">
+                    <i class="fa-solid fa-user-plus"></i>
+                  </Link>
                 </li>
                 <li>
-                  <Link to="/mypage"><i class="fa-solid fa-user"></i></Link>
+                  <Link to="/mypage">
+                    <i class="fa-solid fa-user"></i>
+                  </Link>
                 </li>
                 <li>
                   <Link to="/cartlist">
@@ -114,7 +112,9 @@ const Header = memo(({ goPage, loginSts, setLoginSts }) => {
                   </a>
                 </li>
                 <li>
-                  <Link to="/mypage"><i class="fa-solid fa-user"></i></Link>
+                  <Link to="/mypage">
+                    <i class="fa-solid fa-user"></i>
+                  </Link>
                 </li>
                 <li>
                   <Link to="/cartlist">
@@ -125,7 +125,16 @@ const Header = memo(({ goPage, loginSts, setLoginSts }) => {
             )}
           </div>
           <div className="search-area">
-            <input id="top-search" type="text" />
+            <input id="search" type="text"
+            value={searchKeyword}
+            onChange={(e) => setSearchKeyword(e.target.value)}
+            onKeyUp={(e) => {
+              e.preventDefault();
+              if (e.key === "Enter") {
+                handleSearch();
+              }
+            }}
+            />
             <button className="sbtn">검색</button>
           </div>
         </ul>
@@ -134,4 +143,4 @@ const Header = memo(({ goPage, loginSts, setLoginSts }) => {
   );
 });
 
-export { Header };
+export {Header};
