@@ -124,6 +124,10 @@ const Header = memo(({ goPage, loginSts, setLoginSts }) => {
               </ul>
             )}
           </div>
+          <div className="search-area">
+            <input id="top-search" type="text" />
+            <button className="sbtn">검색</button>
+          </div>
         </ul>
       </div>
     </header>
