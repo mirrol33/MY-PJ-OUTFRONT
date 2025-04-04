@@ -13,6 +13,7 @@ import Join from './components/pages/Join.jsx';
 import MyEdu from './components/pages/MyEdu.jsx';
 import Board from './components/pages/Board.jsx';
 import CartList from './components/modules/CartList.jsx';
+import SearchPage from './components/pages/SearchPage.jsx';
 
 // 메인 컴포넌트 ////////////////////////////
 export default function MainComponent(){
@@ -29,6 +30,7 @@ export default function MainComponent(){
         <Route path="login" element={<Login />} />
         <Route path="join" element={<Join />} />
         <Route path="board" element={<Board />} />
+        <Route path="search" element={<SearchPage />} />
       </Route>
     </Routes>
   </BrowserRouter>

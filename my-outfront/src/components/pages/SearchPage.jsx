@@ -30,38 +30,25 @@ const SearchPage = () => {
   // 가격형식 변환 함수
   const formatPrice = (price) => (Number(price) === 0 ? "무료" : `₩${Number(price).toLocaleString()}`);
 
-  // 장바구니 버튼 클릭 핸들러
-  const cartBtnFn = (e) => {
-    const el = e.currentTarget;
-    console.log("장바구니 버튼 클릭!", el);
-  };
-
   return (
     <div className="search-result">
       {keyword === "" ? ( // 검색어가 비어있을 경우
         <div className="message-container">
-          <div className="img-box">
-            <img src="../../images/common/bono.png" alt="에러메세지" />
-          </div>
-          <h4 className="none-title">검색어를 확인해주세요.</h4>
+          <h4 className="none-title">입력값이 없습니다. 검색어를 확인해주세요.</h4>
           <button className="research"
           onClick={()=>{
-            document.querySelector('.mobile-gnb-button').click();
-            document.querySelector('.search-input').focus();
+            
+            document.querySelector('.search').focus();
           }}
           >다시 찾아보기</button>
         </div>
       ) : selData.length === 0 ? ( // 검색 결과가 없을 경우
         <div className="message-container">
-        <div className="img-box">
-          <img src="../../images/common/bono.png" alt="에러메세지" />
-        </div>
-        <h4 className="none-title"><span>"{keyword}"</span>의 검색결과가 존재하지 않습니다.</h4>
-        <p className="none-desc">열심히 찾아서 준비할게요...</p>
+        <h4 className="none-title"><span>"{keyword}"</span>의 검색결과가 존재하지 않습니다. 다른 검색어를 입력하세요.</h4>
         <button className="research"
         onClick={()=>{
-          document.querySelector('.mobile-gnb-button').click();
-          document.querySelector('.search-input').focus();
+          
+          document.querySelector('.search').focus();
         }}
         >다시 찾아보기</button>
       </div>
@@ -81,7 +68,7 @@ const SearchPage = () => {
                 <p>레벨: {v.gLevel}</p>
                 <p>가격: {formatPrice(v.gPrice)}</p>
                 <p>분류: {v.gSkill}</p>
-                <a className="cart-btn" onClick={cartBtnFn} href="#none">
+                <a className="cart-btn" href="#none">
                   <i className="fa-solid fa-cart-shopping"></i>
                 </a>
               </div>

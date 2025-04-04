@@ -10,6 +10,7 @@
   border-bottom: 1px solid #eee;
   box-sizing: border-box;
   > ul {
+    position: relative;
     margin: 0 auto;
     width: 100%;
     max-width: 1440px;
@@ -84,6 +85,19 @@
     .member-nav ul {
       display: flex;
       gap: 2rem;
+    }
+  }
+  .search-area {
+    position: absolute;
+    right: 0;
+    input {
+      padding: 0.8rem;
+      border: 1px solid #ddd;
+      box-sizing: border-box;
+      border-radius: 4px;
+    }
+    button {
+      margin-left: 8px;
     }
   }
 }

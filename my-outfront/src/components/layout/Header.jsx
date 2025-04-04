@@ -125,7 +125,7 @@ const Header = memo(({goPage, loginSts, setLoginSts}) => {
             )}
           </div>
           <div className="search-area">
-            <input id="search" type="text"
+            <input id="search" className="search" type="text"
             value={searchKeyword}
             onChange={(e) => setSearchKeyword(e.target.value)}
             onKeyUp={(e) => {
@@ -135,7 +135,7 @@ const Header = memo(({goPage, loginSts, setLoginSts}) => {
               }
             }}
             />
-            <button className="sbtn">검색</button>
+            <button className="sbtn" onClick={handleSearch}>검색</button>
           </div>
         </ul>
       </div>
