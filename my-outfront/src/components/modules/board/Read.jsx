@@ -363,7 +363,7 @@ function Read({setMode, selRecord}) {
                           <button
                             // 클릭시 지울 idx를 삭제함수에 보내줌!
                             onClick={() => deleteComment(v.idx)}>
-                            <i class="fa-solid fa-trash"></i>
+                            <i className="fa-solid fa-trash"></i>
                           </button>
 
                           {/* 수정버튼은 수정모드에서 'send'버튼변경 */}
@@ -375,7 +375,7 @@ function Read({setMode, selRecord}) {
                                 onClick={() => {
                                   saveModifiedComment(v.idx);
                                 }}>
-                                <i class="fa-solid fa-comment"></i>
+                                <i className="fa-solid fa-comment"></i>
                               </button>
                             ) : (
                               <button
@@ -383,7 +383,7 @@ function Read({setMode, selRecord}) {
                                 onClick={() => {
                                   modifyComment(v.idx);
                                 }}>
-                                <i class="fa-solid fa-pencil"></i>
+                                <i className="fa-solid fa-pencil"></i>
                               </button>
                             )
                           }

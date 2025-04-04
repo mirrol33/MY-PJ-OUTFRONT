@@ -91,7 +91,7 @@ function List({
               setPageNum(1);
             }}
           >
-           <i class="fa-solid fa-backward"></i>
+           <i className="fa-solid fa-backward"></i>
           </a>
           {/* 이전 페이징으로 이동하기 */}
           <a
@@ -106,7 +106,7 @@ function List({
               // 이전 페이징 첫번호는 (시작값-(페페사이즈-1)) 이다!
             }}
           >
-            <i class="fa-solid fa-arrow-left"></i>
+            <i className="fa-solid fa-arrow-left"></i>
           </a>
         </Fragment>
       );
@@ -168,7 +168,7 @@ function List({
             }}
           >
            
-            <i class="fa-solid fa-arrow-right"></i>
+            <i className="fa-solid fa-arrow-right"></i>
           </a>
           {/* 맨끝 페이징 이동하기 */}
           <a
@@ -187,7 +187,7 @@ function List({
             }}
           >
             
-            <i class="fa-solid fa-forward"></i>
+            <i className="fa-solid fa-forward"></i>
           </a>
         </Fragment>
       );

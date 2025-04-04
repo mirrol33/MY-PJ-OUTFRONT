@@ -12,7 +12,7 @@ const ProfileImage = ({ profileImg, onChange }) => (
       <picture>
         <img src={profileImg} alt="profile" />
         <span>
-        <i class="fa-solid fa-image"></i>
+        <i className="fa-solid fa-image"></i>
         </span>
       </picture>
     </label>

@@ -101,7 +101,7 @@ const Main = () => {
                 <i className="fa-solid fa-cart-shopping"></i>
               </a>
               <a className="heart-btn" href="#none">
-                <i class="fa-solid fa-heart"></i>
+                <i className="fa-solid fa-heart"></i>
               </a>
             </div>
           </li>
@@ -112,10 +112,10 @@ const Main = () => {
         <div className="pagination">
           <ol>
             <li onClick={() => handlePageChange(1)} className={currentPage === 1 ? "disabled" : ""} style={{display: currentPage === 1 ? "none" : "inline-block"}}>
-              <i class="fa-solid fa-backward"></i>
+              <i className="fa-solid fa-backward"></i>
             </li>
             <li onClick={() => handlePageChange(currentPage - 1)} className={currentPage === 1 ? "disabled" : ""} style={{display: currentPage === 1 ? "none" : "inline-block"}}>
-              <i class="fa-solid fa-arrow-left"></i>
+              <i className="fa-solid fa-arrow-left"></i>
             </li>
             {[...Array(totalPages)].map((_, i) => (
               <li key={i + 1} onClick={() => handlePageChange(i + 1)} className={i + 1 === currentPage ? "active" : ""}>
@@ -128,7 +128,7 @@ const Main = () => {
               style={{
                 display: currentPage === totalPages ? "none" : "inline-block",
               }}>
-              <i class="fa-solid fa-arrow-right"></i>
+              <i className="fa-solid fa-arrow-right"></i>
             </li>
             <li
               onClick={() => handlePageChange(totalPages)}
@@ -136,7 +136,7 @@ const Main = () => {
               style={{
                 display: currentPage === totalPages ? "none" : "inline-block",
               }}>
-              <i class="fa-solid fa-forward"></i>
+              <i className="fa-solid fa-forward"></i>
             </li>
           </ol>
         </div>
