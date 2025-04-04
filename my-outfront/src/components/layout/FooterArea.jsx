@@ -5,6 +5,7 @@ function FooterArea(props) {
     <footer>
       <div className='footer'>
         <p>@2025 All Rights Reserved.</p>
+        <p>Created by LMK</p>
       </div>
     </footer>
   );
