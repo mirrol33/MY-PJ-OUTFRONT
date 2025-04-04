@@ -134,24 +134,23 @@
         display: -webkit-box;
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 2;
+        line-clamp: 2;
       }
-      .cart-btn {
+      .list-btns {
         position: absolute;
         right: 0;
         bottom: 0;
+        display: flex;
+        gap: 2px;
         i {
           font-size: 1.8rem;
-          color: #ccc;
+          color: $color-midgray;
+          padding: 8px;
+          border-radius: 4px;
           &:hover {
-            color: $color-primary;
+            background: $color-primary-hover;
           }
-        }
-      }
-      .heart-btn {
-        i {
-          font-size: 1.8rem;
-          color: #ccc;
-          &:hover {
+          &.on {
             color: $color-primary;
           }
         }

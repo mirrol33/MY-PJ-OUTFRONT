@@ -53,7 +53,7 @@ const Main = () => {
   const handlePageChange = (newPage) => {
     if (newPage !== currentPage) setCurrentPage(newPage);
   };
-
+  
   return (
     <div className="main-wrap">
       <h2>{selCate}</h2>
@@ -87,21 +87,23 @@ const Main = () => {
       </div>
       <ul className="list-wrap">
         {currentList.map((edu) => (
-          <li key={edu.idx} className="edu-list" onClick={() => navigate(`/detail/${edu.idx}`)}>
+          <li key={edu.idx} id={`edu-${edu.idx}`} className="edu-list" onClick={() => navigate(`/detail/${edu.idx}`)}>
             <picture>
-              <img src={`${process.env.PUBLIC_URL}/images/edu_thumb/${edu.idx}.png`} alt={`강의 이미지 ${edu.idx}`} />
+              <img src={`${process.env.PUBLIC_URL}/images/edu_thumb/${edu.idx}.png`} alt={`강의이미지${edu.idx}`} />
             </picture>
             <h3>{edu.gName}</h3>
             <p className="ginfo"> {edu.gInfo}</p>
             <p>레벨: {edu.gLevel}</p>
             <p>가격: {formatPrice(edu.gPrice)}</p>
             <p>분류: {edu.gCate}</p>
-            <a className="cart-btn" href="#none">
-              <i className="fa-solid fa-cart-shopping"></i>
-            </a>
-            <a className="heart-btn" href="#none">
-            <i class="fa-solid fa-heart"></i>
-            </a>
+            <div className="list-btns">
+              <a className="cart-btn" href="#none">
+                <i className="fa-solid fa-cart-shopping"></i>
+              </a>
+              <a className="heart-btn" href="#none">
+                <i class="fa-solid fa-heart"></i>
+              </a>
+            </div>
           </li>
         ))}
       </ul>
