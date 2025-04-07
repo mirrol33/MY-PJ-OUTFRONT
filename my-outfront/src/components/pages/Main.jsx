@@ -90,7 +90,10 @@ const Main = () => {
       : [...cart, edu];
 
     setCart(updatedCart);
+    // 로컬스토리지 업데이트 후
     localStorage.setItem("cart", JSON.stringify(updatedCart));
+    // 장바구니 업데이트 이벤트 전송
+    window.dispatchEvent(new Event("cartUpdated"));
     alert(
       alreadyInCart
         ? "장바구니에서 삭제되었습니다!"

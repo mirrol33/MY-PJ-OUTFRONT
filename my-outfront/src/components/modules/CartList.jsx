@@ -67,7 +67,7 @@ function CartList() {
 
   return (
     <div className="cart-list-wrap">
-      <h2>🛒 장바구니</h2>
+      <h2>수강 바구니</h2>
 
       {cart.length === 0 ? (
         <p>장바구니가 비어 있습니다.</p>

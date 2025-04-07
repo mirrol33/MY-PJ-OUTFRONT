@@ -3,9 +3,20 @@ import {Link} from "react-router-dom";
 import "../../scss/header.scss";
 import $ from "jquery";
 
+const categories = [
+  "전체",
+  "개발프로그래밍",
+  "게임개발",
+  "데이터사이언스",
+  "인공지능",
+  "보안네트워크",
+  "기타",
+];
+
 const Header = memo(({goPage, loginSts, setLoginSts}) => {
   const [searchKeyword, setSearchKeyword] = useState("");
-  const eduCate = ["전체", "개발프로그래밍", "게임개발", "데이터사이언스", "인공지능", "보안네트워크", "기타"]; // 강의 카테고리
+  // const eduCate = ["전체", "개발프로그래밍", "게임개발", "데이터사이언스", "인공지능", "보안네트워크", "기타"]; // 강의 카테고리
+  const [cartCount, setCartCount] = useState(0); // 장바구니 개수 상태변수
 
   useEffect(() => {
     const $mainMenu = $(".main-category > li:eq(0) > a");
@@ -42,6 +53,27 @@ const Header = memo(({goPage, loginSts, setLoginSts}) => {
     goPage("search", { state: { keyword: searchKeyword } });
   };
 
+  // ✅ 장바구니 수 실시간 반영 useEffect
+  useEffect(() => {
+    const updateCartCount = () => {
+      const cart = JSON.parse(localStorage.getItem("cart")) || [];
+      setCartCount(cart.length);
+    };
+
+    updateCartCount(); // 최초 로딩 시
+
+    // 로컬스토리지 변경 감지 (다른 탭에서 수정되었을 때)
+    window.addEventListener("storage", updateCartCount);
+
+    // 커스텀 이벤트로 수동 갱신
+    window.addEventListener("cartUpdated", updateCartCount);
+
+    return () => {
+      window.removeEventListener("storage", updateCartCount);
+      window.removeEventListener("cartUpdated", updateCartCount);
+    };
+  }, []);
+
   // 리턴코드구역
   return (
     <header>
@@ -64,7 +96,7 @@ const Header = memo(({goPage, loginSts, setLoginSts}) => {
               </li>
             </ul>
             <ul className="sub-category">
-              {eduCate.map((category) => (
+              {categories.map((category) => (
                 <li key={category}>
                   <a href={`${process.env.PUBLIC_URL}/#${category}`}>{category}</a>
                 </li>
@@ -92,6 +124,8 @@ const Header = memo(({goPage, loginSts, setLoginSts}) => {
                 <li>
                   <Link to="/cartlist">
                     <i className="fa-solid fa-cart-shopping" title="장바구니"></i>
+                    {/* 장바구니 개수 */}
+                    <span className="cart-count">{cartCount}</span>
                   </Link>
                 </li>
               </ul>
