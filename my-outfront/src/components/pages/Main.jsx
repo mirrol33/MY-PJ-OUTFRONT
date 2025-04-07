@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../scss/main.scss";
 import eduData from "../../js/data/edu_data.json";
-import $ from "jquery";
 
 const categories = [
   "전체",
@@ -25,31 +24,37 @@ const Main = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [levelFilter, setLevelFilter] = useState("all");
   const [sortType, setSortType] = useState("default");
-  const [cart, setCart] = useState([]);
+  const [cart, setCart] = useState(() => {
+    return JSON.parse(localStorage.getItem("cart")) || [];
+  });
 
-  // URL 해시 변경 감지
+  // 해시태그 변화 감지
   useEffect(() => {
     const handleHashChange = () => {
-      setSelCate(getHashCategory());
-      setCurrentPage(1);
+      const newCate = getHashCategory();
+      if (newCate !== selCate) {
+        setSelCate(newCate);
+        setCurrentPage(1);
+      }
     };
-
     window.addEventListener("hashchange", handleHashChange);
     return () => window.removeEventListener("hashchange", handleHashChange);
-  }, []);
+  }, [selCate]);
 
-  // 가격 포맷 함수
+  // 가격 포맷
   const formatPrice = (price) =>
     Number(price) === 0 ? "무료" : `₩${Number(price).toLocaleString()}`;
 
-  // 필터 및 정렬 적용된 데이터 반환
+  // 필터링 + 정렬된 데이터
   const getFilteredAndSortedData = useCallback(() => {
     let list =
       selCate === "전체"
         ? eduData
         : eduData.filter(({ gCate }) => gCate === selCate);
-    if (levelFilter !== "all")
+
+    if (levelFilter !== "all") {
       list = list.filter(({ gLevel }) => gLevel === levelFilter);
+    }
 
     return list.sort((a, b) => {
       if (sortType === "name") return a.gName.localeCompare(b.gName, "ko-KR");
@@ -59,7 +64,6 @@ const Main = () => {
     });
   }, [selCate, levelFilter, sortType]);
 
-  // 페이지네이션 로직
   const sortedList = getFilteredAndSortedData();
   const itemsPerPage = 15;
   const totalPages = Math.ceil(sortedList.length / itemsPerPage);
@@ -69,49 +73,31 @@ const Main = () => {
   );
 
   const handlePageChange = (newPage) => {
-    if (newPage !== currentPage) setCurrentPage(newPage);
+    if (newPage !== currentPage && newPage >= 1 && newPage <= totalPages) {
+      setCurrentPage(newPage);
+    }
   };
 
-  /// ✅ 장바구니 데이터 로드
-  useEffect(() => {
-    const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
-    setCart(storedCart);
-
-    // 🏷️ 기존 장바구니에 있던 강의의 아이콘에 .on 추가
-    storedCart.forEach((edu) => {
-      $(`#edu-${edu.idx} .cart-btn i`).addClass("on");
-    });
-  }, []);
-
-  // ✅ 장바구니에 해당 강의가 있는지 확인
   const isInCart = (idx) => cart.some((item) => item.idx === idx);
 
-  // ✅ 장바구니 추가/삭제 함수
   const addToCart = (e, edu) => {
     e.preventDefault();
     e.stopPropagation();
 
-    let updatedCart = [...cart];
+    const alreadyInCart = isInCart(edu.idx);
+    const updatedCart = alreadyInCart
+      ? cart.filter((item) => item.idx !== edu.idx)
+      : [...cart, edu];
 
-    if (isInCart(edu.idx)) {
-      // ❌ 장바구니에서 제거
-      updatedCart = updatedCart.filter((item) => item.idx !== edu.idx);
-      alert("장바구니에서 삭제되었습니다!");
-    } else {
-      // ✅ 장바구니에 추가
-      updatedCart.push(edu);
-      alert("장바구니에 추가되었습니다!");
-    }
-
-    // 📝 로컬스토리지 업데이트 & 상태 변경
-    localStorage.setItem("cart", JSON.stringify(updatedCart));
     setCart(updatedCart);
-
-    // 🎨 아이콘 클래스 토글
-    $(e.currentTarget).find("i").toggleClass("on", !isInCart(edu.idx));
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
+    alert(
+      alreadyInCart
+        ? "장바구니에서 삭제되었습니다!"
+        : "장바구니에 추가되었습니다!"
+    );
   };
-  
-  // 리턴 코드구역 ////
+
   return (
     <div className="main-wrap">
       <h2>{selCate}</h2>
@@ -155,9 +141,10 @@ const Main = () => {
           </select>
         </div>
       </div>
+
       <ul className="list-wrap">
         {currentList.map((edu) => (
-          <li key={edu.idx} id={`edu-${edu.idx}`} className="edu-list">
+          <li key={edu.idx} className="edu-list">
             <picture onClick={() => navigate(`/detail/${edu.idx}`)}>
               <img
                 src={`${process.env.PUBLIC_URL}/images/edu_thumb/${edu.idx}.png`}
@@ -175,7 +162,11 @@ const Main = () => {
                 href="#"
                 onClick={(e) => addToCart(e, edu)}
               >
-                <i className="fa-solid fa-cart-shopping"></i>
+                <i
+                  className={`fa-solid fa-cart-shopping ${
+                    isInCart(edu.idx) ? "on" : ""
+                  }`}
+                ></i>
               </a>
               <a className="heart-btn" href="#none">
                 <i className="fa-solid fa-heart"></i>
@@ -190,14 +181,12 @@ const Main = () => {
           <ol>
             <li
               onClick={() => handlePageChange(1)}
-              className={currentPage === 1 ? "disabled" : ""}
               style={{ display: currentPage === 1 ? "none" : "inline-block" }}
             >
               <i className="fa-solid fa-backward"></i>
             </li>
             <li
               onClick={() => handlePageChange(currentPage - 1)}
-              className={currentPage === 1 ? "disabled" : ""}
               style={{ display: currentPage === 1 ? "none" : "inline-block" }}
             >
               <i className="fa-solid fa-arrow-left"></i>
@@ -213,7 +202,6 @@ const Main = () => {
             ))}
             <li
               onClick={() => handlePageChange(currentPage + 1)}
-              className={currentPage === totalPages ? "disabled" : ""}
               style={{
                 display: currentPage === totalPages ? "none" : "inline-block",
               }}
@@ -222,7 +210,6 @@ const Main = () => {
             </li>
             <li
               onClick={() => handlePageChange(totalPages)}
-              className={currentPage === totalPages ? "disabled" : ""}
               style={{
                 display: currentPage === totalPages ? "none" : "inline-block",
               }}
