@@ -88,6 +88,19 @@
       gap: 2rem;
     }
   }
+  .cart-area {
+    position: relative;
+    .cart-count {
+      color: $color-white;
+      background-color: $color-secondary;
+      font-size: 1rem;
+      border-radius: 50%;
+      padding: 0.2rem 0.4rem;
+      position: absolute;
+      right: -8px;
+      top: -8px;
+    }
+  }
   .search-area {
     position: absolute;
     right: 24px;

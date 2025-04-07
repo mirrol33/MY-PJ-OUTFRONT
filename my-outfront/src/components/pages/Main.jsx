@@ -1,3 +1,4 @@
+// Main.jsx
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../scss/main.scss";
@@ -24,12 +25,28 @@ const Main = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [levelFilter, setLevelFilter] = useState("all");
   const [sortType, setSortType] = useState("default");
-  const [cart, setCart] = useState(() => {
-    return JSON.parse(localStorage.getItem("cart")) || [];
-  });
+  const [cart, setCart] = useState([]);
 
   // 해시태그 변화 감지
   useEffect(() => {
+    const storedUser = JSON.parse(sessionStorage.getItem("minfo"));
+    const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
+    const userEduData = JSON.parse(localStorage.getItem("mypage-user-data")) || [];
+  
+    if (storedUser) {
+      const currentUser = userEduData.find((u) => u.uid === storedUser.uid);
+      const learningIds = currentUser?.eduIng?.map((edu) => edu.eduId) || [];
+  
+      const filteredCart = storedCart.filter(
+        (item) => !learningIds.includes(item.idx)
+      );
+  
+      setCart(filteredCart);
+      localStorage.setItem("cart", JSON.stringify(filteredCart));
+    } else {
+      setCart(storedCart);
+    }
+
     const handleHashChange = () => {
       const newCate = getHashCategory();
       if (newCate !== selCate) {
@@ -83,23 +100,37 @@ const Main = () => {
   const addToCart = (e, edu) => {
     e.preventDefault();
     e.stopPropagation();
-
-    const alreadyInCart = isInCart(edu.idx);
+  
+    const storedUser = JSON.parse(sessionStorage.getItem("minfo"));
+    const userEduData = JSON.parse(localStorage.getItem("mypage-user-data")) || [];
+  
+    // 로그인한 경우: 학습 중 강의 체크
+    if (storedUser) {
+      const currentUser = userEduData.find((u) => u.uid === storedUser.uid);
+      const learningList = currentUser?.eduIng?.map((edu) => edu.eduId) || [];
+  
+      if (learningList.includes(edu.idx)) {
+        alert("이미 학습 중인 강의입니다.");
+        return;
+      }
+    }
+  
+    const alreadyInCart = cart.some((item) => item.idx === edu.idx);
     const updatedCart = alreadyInCart
       ? cart.filter((item) => item.idx !== edu.idx)
       : [...cart, edu];
-
+  
     setCart(updatedCart);
-    // 로컬스토리지 업데이트 후
     localStorage.setItem("cart", JSON.stringify(updatedCart));
-    // 장바구니 업데이트 이벤트 전송
     window.dispatchEvent(new Event("cartUpdated"));
+  
     alert(
       alreadyInCart
         ? "장바구니에서 삭제되었습니다!"
         : "장바구니에 추가되었습니다!"
     );
   };
+  
 
   return (
     <div className="main-wrap">
@@ -127,7 +158,7 @@ const Main = () => {
             onChange={(e) => setSortType(e.target.value)}
             value={sortType}
           >
-            <option value="default">전체 정렬</option>
+            <option value="default">기본 정렬</option>
             <option value="name">이름순 (가나다 순)</option>
             <option value="low-price">가격 낮은 순</option>
             <option value="high-price">가격 높은 순</option>

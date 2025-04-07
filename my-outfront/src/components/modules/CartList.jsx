@@ -1,56 +1,75 @@
-import React, { useEffect, useState } from "react";
+// CartList.jsx
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../scss/pages/cartlist.scss";
 
 function CartList() {
-  const [cart, setCart] = useState(() => {
-    return JSON.parse(localStorage.getItem("cart")) || [];
-  });
+  const [cart, setCart] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
-
   const navigate = useNavigate();
 
-  // 가격 포맷 함수
+  // 사용자 로그인 정보 및 장바구니 필터링
+  useEffect(() => {
+    const storedUser = JSON.parse(sessionStorage.getItem("minfo"));
+    const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
+
+    if (!storedUser) {
+      setCart(storedCart);
+      return;
+    }
+
+    const userEduData = JSON.parse(localStorage.getItem("mypage-user-data")) || [];
+    const currentUser = userEduData.find((u) => u.uid === storedUser.uid);
+
+    const filteredCart =
+      currentUser?.eduIng?.length > 0
+        ? storedCart.filter(
+            (item) => !currentUser.eduIng.some((edu) => edu.eduId === item.idx)
+          )
+        : storedCart;
+
+    setCart(filteredCart);
+    localStorage.setItem("cart", JSON.stringify(filteredCart));
+    window.dispatchEvent(new Event("cartUpdated"));
+  }, []);
+
+  // 장바구니 변경 시 로컬 저장
+  useEffect(() => {
+    localStorage.setItem("cart", JSON.stringify(cart));
+  }, [cart]);
+
+  // 가격 포맷
   const formatPrice = (price) =>
     Number(price) === 0 ? "무료" : `₩${Number(price).toLocaleString()}`;
 
-  // 체크박스 선택/해제
+  // 선택 토글
   const toggleSelect = (idx) => {
-    if (selectedItems.includes(idx)) {
-      setSelectedItems(selectedItems.filter((id) => id !== idx));
-    } else {
-      setSelectedItems([...selectedItems, idx]);
-    }
+    setSelectedItems((prev) =>
+      prev.includes(idx) ? prev.filter((id) => id !== idx) : [...prev, idx]
+    );
   };
 
-  // 전체 선택
   const toggleSelectAll = () => {
-    if (selectedItems.length === cart.length) {
-      setSelectedItems([]);
-    } else {
-      setSelectedItems(cart.map((item) => item.idx));
-    }
+    setSelectedItems(selectedItems.length === cart.length ? [] : cart.map((item) => item.idx));
   };
 
-  // 선택 항목 삭제
   const deleteSelected = () => {
     if (selectedItems.length === 0) return alert("선택된 항목이 없습니다.");
-    const updatedCart = cart.filter((item) => !selectedItems.includes(item.idx));
-    setCart(updatedCart);
+    const updated = cart.filter((item) => !selectedItems.includes(item.idx));
+    setCart(updated);
     setSelectedItems([]);
-    localStorage.setItem("cart", JSON.stringify(updatedCart));
+    window.dispatchEvent(new Event("cartUpdated"));
   };
 
-  // 전체 삭제
   const clearCart = () => {
     if (window.confirm("장바구니를 비우시겠습니까?")) {
       setCart([]);
       setSelectedItems([]);
       localStorage.removeItem("cart");
+      window.dispatchEvent(new Event("cartUpdated"));
     }
   };
 
-  // 결제하기
   const handleCheckout = () => {
     if (selectedItems.length === 0) return alert("결제할 항목을 선택하세요.");
 
@@ -58,19 +77,21 @@ function CartList() {
     const total = selectedCourses.reduce((sum, item) => sum + Number(item.gPrice), 0);
 
     alert(`총 ${selectedCourses.length}개의 강의를 결제합니다.\n결제 금액: ${formatPrice(total)}`);
-    // 실제 결제 로직은 여기 추가 (결제 API 또는 이동 등)
+    // TODO: 결제 로직 연동
   };
 
-  useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(cart));
-  }, [cart]);
+  const selectedTotalPrice = useMemo(() => {
+    return cart
+      .filter((item) => selectedItems.includes(item.idx))
+      .reduce((sum, item) => sum + Number(item.gPrice), 0);
+  }, [selectedItems, cart]);
 
   return (
     <div className="cart-list-wrap">
       <h2>수강 바구니</h2>
 
       {cart.length === 0 ? (
-        <p>장바구니가 비어 있습니다.</p>
+        <p className="empty-msg">장바구니가 비어 있습니다.</p>
       ) : (
         <>
           <div className="cart-controls">
@@ -113,14 +134,7 @@ function CartList() {
               선택한 강의 수: <strong>{selectedItems.length}</strong>개
             </p>
             <p>
-              총 결제금액:{" "}
-              <strong>
-                {formatPrice(
-                  cart
-                    .filter((item) => selectedItems.includes(item.idx))
-                    .reduce((sum, item) => sum + Number(item.gPrice), 0)
-                )}
-              </strong>
+              총 결제금액: <strong>{formatPrice(selectedTotalPrice)}</strong>
             </p>
             <button className="checkout-btn" onClick={handleCheckout}>
               💳 결제하기

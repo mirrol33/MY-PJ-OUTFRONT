@@ -24,7 +24,7 @@
   
       button {
         padding: 0.4rem 0.8rem;
-        background-color: #555;
+        background-color: $color-midgray;
         color: white;
         border: none;
         border-radius: 4px;
@@ -86,6 +86,12 @@
         border-radius: 6px;
         cursor: pointer;
       }
+    }
+    .empty-msg {
+      text-align: center;
+      margin-top: 2.4rem;
+      font-size: 1.6rem;
+      color: $color-midgray;
     }
   }
   
