@@ -1,96 +1,147 @@
-// CartList.jsx
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useCart } from "../modules/CartContext";
 import "../../scss/pages/cartlist.scss";
+import userData from "../../js/data/user_data.json";
 
 function CartList() {
-  const [cart, setCart] = useState([]);
+  const { cart, updateCart } = useCart();
   const [selectedItems, setSelectedItems] = useState([]);
+  const [storedUser, setStoredUser] = useState(null);
   const navigate = useNavigate();
 
-  // 사용자 로그인 정보 및 장바구니 필터링
+  // ✅ 최초 사용자 데이터 저장
   useEffect(() => {
-    const storedUser = JSON.parse(sessionStorage.getItem("minfo"));
-    const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
-
-    if (!storedUser) {
-      setCart(storedCart);
-      return;
+    if (!localStorage.getItem("mypage-user-data")) {
+      localStorage.setItem("mypage-user-data", JSON.stringify(userData));
     }
+  }, []);
+
+  // ✅ 로그인 유저 정보 로딩
+  useEffect(() => {
+    const userInfo = sessionStorage.getItem("minfo");
+    if (userInfo) {
+      setStoredUser(JSON.parse(userInfo));
+    }
+  }, []);
+
+  // ✅ 수강 중 강의 제거된 장바구니 계산 (useMemo)
+  const filteredCart = useMemo(() => {
+    if (!storedUser) return cart;
 
     const userEduData = JSON.parse(localStorage.getItem("mypage-user-data")) || [];
     const currentUser = userEduData.find((u) => u.uid === storedUser.uid);
+    const learningIds = currentUser?.eduIng?.map((edu) => edu.eduId) || [];
 
-    const filteredCart =
-      currentUser?.eduIng?.length > 0
-        ? storedCart.filter(
-            (item) => !currentUser.eduIng.some((edu) => edu.eduId === item.idx)
-          )
-        : storedCart;
+    return cart.filter((item) => !learningIds.includes(item.idx));
+  }, [cart, storedUser]);
 
-    setCart(filteredCart);
-    localStorage.setItem("cart", JSON.stringify(filteredCart));
-    window.dispatchEvent(new Event("cartUpdated"));
-  }, []);
-
-  // 장바구니 변경 시 로컬 저장
+  // ✅ cart가 변경되었을 경우만 updateCart 호출
   useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(cart));
-  }, [cart]);
+    const cartIds = cart.map((item) => item.idx);
+    const filteredIds = filteredCart.map((item) => item.idx);
 
-  // 가격 포맷
+    const isDifferent =
+      cartIds.length !== filteredIds.length ||
+      cartIds.some((id, i) => id !== filteredIds[i]);
+
+    if (isDifferent) {
+      updateCart(filteredCart);
+    }
+  }, [filteredCart, cart, updateCart]);
+
   const formatPrice = (price) =>
     Number(price) === 0 ? "무료" : `₩${Number(price).toLocaleString()}`;
 
-  // 선택 토글
+  const toggleSelectAll = () => {
+    setSelectedItems(
+      selectedItems.length === filteredCart.length
+        ? []
+        : filteredCart.map((item) => item.idx)
+    );
+  };
+
   const toggleSelect = (idx) => {
     setSelectedItems((prev) =>
       prev.includes(idx) ? prev.filter((id) => id !== idx) : [...prev, idx]
     );
   };
 
-  const toggleSelectAll = () => {
-    setSelectedItems(selectedItems.length === cart.length ? [] : cart.map((item) => item.idx));
-  };
-
   const deleteSelected = () => {
     if (selectedItems.length === 0) return alert("선택된 항목이 없습니다.");
-    const updated = cart.filter((item) => !selectedItems.includes(item.idx));
-    setCart(updated);
+    const updated = filteredCart.filter((item) => !selectedItems.includes(item.idx));
+    updateCart(updated);
     setSelectedItems([]);
-    window.dispatchEvent(new Event("cartUpdated"));
   };
 
   const clearCart = () => {
     if (window.confirm("장바구니를 비우시겠습니까?")) {
-      setCart([]);
+      updateCart([]);
       setSelectedItems([]);
-      localStorage.removeItem("cart");
-      window.dispatchEvent(new Event("cartUpdated"));
     }
   };
 
   const handleCheckout = () => {
     if (selectedItems.length === 0) return alert("결제할 항목을 선택하세요.");
 
-    const selectedCourses = cart.filter((item) => selectedItems.includes(item.idx));
-    const total = selectedCourses.reduce((sum, item) => sum + Number(item.gPrice), 0);
+    if (!storedUser) {
+      alert("로그인 후 결제할 수 있습니다!");
+      navigate("/login");
+      return;
+    }
 
-    alert(`총 ${selectedCourses.length}개의 강의를 결제합니다.\n결제 금액: ${formatPrice(total)}`);
-    // TODO: 결제 로직 연동
+    const selectedCourses = filteredCart.filter((item) =>
+      selectedItems.includes(item.idx)
+    );
+    const totalPrice = selectedCourses.reduce((sum, item) => sum + Number(item.gPrice), 0);
+
+    const userEduData = JSON.parse(localStorage.getItem("mypage-user-data")) || [];
+    const userIndex = userEduData.findIndex((user) => user.uid === storedUser.uid);
+
+    if (userIndex !== -1) {
+      const existingEdu = userEduData[userIndex].eduIng || [];
+
+      const newEdu = selectedCourses.map((course) => ({
+        eduId: course.idx,
+        eduName: course.gName,
+        eduRate: "0", // 초기값
+        eduState: "학습전", // 초기값
+      }));
+
+      const updatedEdu = [
+        ...existingEdu,
+        ...newEdu.filter(
+          (newItem) => !existingEdu.some((edu) => edu.eduId === newItem.eduId)
+        ),
+      ];
+
+      userEduData[userIndex].eduIng = updatedEdu;
+      localStorage.setItem("mypage-user-data", JSON.stringify(userEduData));
+    }
+
+    const remaining = filteredCart.filter((item) => !selectedItems.includes(item.idx));
+    updateCart(remaining);
+    setSelectedItems([]);
+
+    alert(
+      `총 ${selectedCourses.length}개의 강의 결제 완료!\n결제 금액: ${formatPrice(
+        totalPrice
+      )}`
+    );
+    navigate("/mypage");
   };
 
   const selectedTotalPrice = useMemo(() => {
-    return cart
+    return filteredCart
       .filter((item) => selectedItems.includes(item.idx))
       .reduce((sum, item) => sum + Number(item.gPrice), 0);
-  }, [selectedItems, cart]);
+  }, [selectedItems, filteredCart]);
 
   return (
     <div className="cart-list-wrap">
       <h2>수강 바구니</h2>
 
-      {cart.length === 0 ? (
+      {filteredCart.length === 0 ? (
         <p className="empty-msg">장바구니가 비어 있습니다.</p>
       ) : (
         <>
@@ -99,7 +150,7 @@ function CartList() {
               <input
                 type="checkbox"
                 onChange={toggleSelectAll}
-                checked={selectedItems.length === cart.length}
+                checked={selectedItems.length === filteredCart.length}
               />
               전체 선택
             </label>
@@ -108,7 +159,7 @@ function CartList() {
           </div>
 
           <ul className="cart-list">
-            {cart.map((item) => (
+            {filteredCart.map((item) => (
               <li key={item.idx} className="cart-item">
                 <input
                   type="checkbox"

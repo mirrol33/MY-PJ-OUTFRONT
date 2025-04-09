@@ -1,122 +1,115 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import "../../scss/myedu.scss"; // 스타일 파일을 가져옵니다.
-import reviewData from "../../js/data/review_data.json"; // 리뷰 데이터 가져오기
-import userData from "../../js/data/user_data.json"; // 사용자 데이터 가져오기
+import "../../scss/myedu.scss";
+import reviewData from "../../js/data/review_data.json";
+import userData from "../../js/data/user_data.json";
 
 function MyEdu() {
   const navigate = useNavigate();
-  const [userInfo, setUserInfo] = useState(null); // 로그인한 사용자 정보
-  const [userEduList, setUserEduList] = useState([]); // 사용자의 학습 목록
-  const [reviewList, setReviewList] = useState(reviewData); // 리뷰 목록
-  const [selectedReview, setSelectedReview] = useState(null); // 선택된 리뷰 정보
+
+  const [userInfo, setUserInfo] = useState(null);
+  const [userEduList, setUserEduList] = useState([]);
+  const [reviewList, setReviewList] = useState([]);
+  const [selectedReview, setSelectedReview] = useState(null);
   const [newReview, setNewReview] = useState({
-      idx: null,
-      eduId: "",
-      uid: "",
-      name: "",
-      grade: 0.5, // 평점 기본값 0.5
-      text: "수강 후기를 작성해주세요", // 리뷰 기본값
-    }); // 신규 수강평
-  const [showPopup, setShowPopup] = useState(false); // 리뷰 팝업 표시 여부
+    idx: null,
+    eduId: "",
+    uid: "",
+    name: "",
+    grade: 0.5,
+    text: "수강 후기를 작성해주세요",
+  });
+  const [showPopup, setShowPopup] = useState(false);
 
+  // 🔸 초기 로딩: 유저, 강의, 리뷰 세팅
   useEffect(() => {
-    // 로컬스토리지에서 'mypage-user-data'가 존재하는지 체크
-    let storedUserData = localStorage.getItem("mypage-user-data");
+    const storedUser = JSON.parse(sessionStorage.getItem("minfo"));
+    const storedUserData =
+      JSON.parse(localStorage.getItem("mypage-user-data")) || userData;
+    const storedReviews =
+      JSON.parse(localStorage.getItem("review-data")) || reviewData;
 
-    if (!storedUserData) {
-      // 로컬스토리지에 'mypage-user-data'가 없으면 user_data.json을 저장
-      console.log("로컬스토리지에 'mypage-user-data'가 없으므로, user_data.json을 추가합니다.");
+    // userData가 없으면 저장
+    if (!localStorage.getItem("mypage-user-data")) {
+      console.log("user_data.json을 로컬스토리지에 저장합니다.");
       localStorage.setItem("mypage-user-data", JSON.stringify(userData));
-      storedUserData = JSON.stringify(userData); // 로컬스토리지에 저장된 값을 다시 가져옴
     }
-
-    // 🔹 로컬스토리지에서 리뷰 데이터를 가져와 상태 설정
-    const storedReviews = JSON.parse(localStorage.getItem("review-data")) || reviewData;
-    setReviewList(storedReviews);
-  
-    // 세션 스토리지에서 로그인한 사용자 정보 가져오기
-    const storedUser = sessionStorage.getItem("minfo");
 
     if (storedUser) {
-      const parsedUser = JSON.parse(storedUser);
-      setUserInfo(parsedUser);
-
-      // 로그인한 사용자와 uid가 같은 데이터를 찾기
-      storedUserData = JSON.parse(storedUserData); // user_data.json 데이터를 파싱
-      const currentUser = storedUserData.find(
-        (user) => user.uid === parsedUser.uid
-      );
-      if (currentUser) {
-        setUserEduList(currentUser.eduIng); // 학습 목록 설정
-      }
+      setUserInfo(storedUser);
+      const currentUser = storedUserData.find((u) => u.uid === storedUser.uid);
+      setUserEduList(currentUser?.eduIng || []);
     }
+
+    setReviewList(storedReviews);
   }, []);
 
-  useEffect(() => {
-    if (userInfo) {
-      // userInfo가 업데이트되었을 때, userData를 로컬스토리지에서 찾아서 업데이트
-      let storedUserData = JSON.parse(localStorage.getItem("mypage-user-data")) || [];
-      const currentUser = storedUserData.find((user) => user.uid === userInfo.uid);
-      if (currentUser) {
-        setUserEduList(currentUser.eduIng); // 학습 목록 설정
-      }
-    }
-  }, [userInfo]); // userInfo가 업데이트될 때마다 실행
+  // 🔸 사용자 리뷰 조회 (메모이제이션)
+  const getUserReview = useCallback(
+    (eduId) =>
+      reviewList.find(
+        (review) => review.uid === userInfo?.uid && review.eduId === eduId
+      ),
+    [reviewList, userInfo]
+  );
 
-  // 수강평 팝업 열기
+  // 🔸 수강평 팝업 열기
   const openReviewPopup = (eduId) => {
-    const userReview = reviewList.find(
-      (review) => review.uid === userInfo.uid && review.eduId === eduId
-    );
+    const userReview = getUserReview(eduId);
 
     if (userReview) {
       setSelectedReview(userReview);
-      setNewReview({ grade: userReview.grade, text: userReview.text });
+      setNewReview({
+        grade: userReview.grade,
+        text: userReview.text,
+      });
     } else {
       setSelectedReview({ eduId, uid: userInfo.uid });
-      setNewReview({ grade: 0.5, text: "수강 후기를 작성해주세요" }); // 기본값으로 초기화
+      setNewReview({
+        grade: 0.5,
+        text: "수강 후기를 작성해주세요",
+      });
     }
     setShowPopup(true);
   };
 
-  // 수강평 저장
+  // 🔸 수강평 저장
   const saveReview = () => {
-    let storedReviews = JSON.parse(localStorage.getItem("review-data")) || reviewData;
-
-    const existingReviewIndex = storedReviews.findIndex(
-      (review) => review.uid === userInfo.uid && review.eduId === selectedReview.eduId
+    const updatedReviews = [...reviewList];
+    const existingIndex = updatedReviews.findIndex(
+      (r) =>
+        r.uid === userInfo.uid &&
+        r.eduId === selectedReview.eduId
     );
 
-    if (existingReviewIndex !== -1) {
-      storedReviews[existingReviewIndex] = {
-        ...storedReviews[existingReviewIndex],
+    if (existingIndex !== -1) {
+      updatedReviews[existingIndex] = {
+        ...updatedReviews[existingIndex],
         grade: newReview.grade,
         text: newReview.text,
       };
     } else {
-      const newIdx = storedReviews.length > 0 ? storedReviews[storedReviews.length - 1].idx + 1 : 1;
-      const newReviewData = {
+      const newIdx =
+        updatedReviews.length > 0
+          ? updatedReviews[updatedReviews.length - 1].idx + 1
+          : 1;
+      updatedReviews.push({
         idx: newIdx,
         eduId: selectedReview.eduId,
         uid: userInfo.uid,
         name: userInfo.unm,
         grade: newReview.grade,
         text: newReview.text,
-      };
-      storedReviews.push(newReviewData);
+      });
     }
 
-    // 로컬 스토리지 업데이트
-    localStorage.setItem("review-data", JSON.stringify(storedReviews));
-
-    // 상태 업데이트하여 화면 갱신
-    setReviewList(storedReviews);
+    localStorage.setItem("review-data", JSON.stringify(updatedReviews));
+    setReviewList(updatedReviews);
     alert("수강평이 저장되었습니다!");
     setShowPopup(false);
   };
 
-  // 입력 값 변경 핸들러
+  // 🔸 입력값 핸들링
   const handleChange = (e) => {
     let { name, value } = e.target;
 
@@ -128,18 +121,22 @@ function MyEdu() {
       }
     }
 
-    setNewReview({ ...newReview, [name]: value });
+    setNewReview((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
+
+  const hasEduList = useMemo(() => userEduList.length > 0, [userEduList]);
 
   return (
     <div className="my-edu-wrap">
       <h2>내 학습</h2>
       <ul className="myedu-list">
-        {userEduList.length > 0 ? (
+        {hasEduList ? (
           userEduList.map((edu) => {
-            const userReview = reviewList.find(
-              (review) => review.uid === userInfo.uid && review.eduId === edu.eduId
-            );
+            const review = getUserReview(edu.eduId);
+            const isComplete = parseInt(edu.eduRate) >= 60;
 
             return (
               <li key={edu.eduId}>
@@ -150,10 +147,15 @@ function MyEdu() {
                   />
                 </picture>
                 <h4>{edu.eduName}</h4>
-                <p>{edu.eduState} ({edu.eduRate}%)</p>
-                {parseInt(edu.eduRate) >= 60 && (
-                  <button className="my-review-btn" onClick={() => openReviewPopup(edu.eduId)}>
-                    {userReview ? (
+                <p>
+                  {edu.eduState} ({edu.eduRate}%)
+                </p>
+                {isComplete && (
+                  <button
+                    className="my-review-btn"
+                    onClick={() => openReviewPopup(edu.eduId)}
+                  >
+                    {review ? (
                       <span className="star-grade2">
                         평점 (
                         <img
@@ -165,8 +167,8 @@ function MyEdu() {
                           src="./images/main/star.png"
                           alt="별"
                           width="8"
-                        />{" "}
-                        {userReview.grade})
+                        />
+                        {review.grade})
                       </span>
                     ) : (
                       "수강평 작성"
@@ -181,7 +183,6 @@ function MyEdu() {
         )}
       </ul>
 
-      {/* 리뷰 팝업 */}
       {showPopup && selectedReview && (
         <div className="review-popup">
           <div className="popup-content">

@@ -1,8 +1,11 @@
 // Main.jsx
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { useCart } from "../modules/CartContext";
 import "../../scss/main.scss";
 import eduData from "../../js/data/edu_data.json";
+
+
 
 const categories = [
   "전체",
@@ -21,31 +24,21 @@ const getHashCategory = () => {
 
 const Main = () => {
   const navigate = useNavigate();
+  const {
+    cart,
+    addToCart,
+    isInCart,
+    filterCartWithUserData,
+  } = useCart();
+
   const [selCate, setSelCate] = useState(() => getHashCategory());
   const [currentPage, setCurrentPage] = useState(1);
   const [levelFilter, setLevelFilter] = useState("all");
   const [sortType, setSortType] = useState("default");
-  const [cart, setCart] = useState([]);
-
-  // 해시태그 변화 감지
+  
+  // 해시 변경 감지 + 필터된 장바구니 초기 설정
   useEffect(() => {
-    const storedUser = JSON.parse(sessionStorage.getItem("minfo"));
-    const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
-    const userEduData = JSON.parse(localStorage.getItem("mypage-user-data")) || [];
-  
-    if (storedUser) {
-      const currentUser = userEduData.find((u) => u.uid === storedUser.uid);
-      const learningIds = currentUser?.eduIng?.map((edu) => edu.eduId) || [];
-  
-      const filteredCart = storedCart.filter(
-        (item) => !learningIds.includes(item.idx)
-      );
-  
-      setCart(filteredCart);
-      localStorage.setItem("cart", JSON.stringify(filteredCart));
-    } else {
-      setCart(storedCart);
-    }
+    filterCartWithUserData(); // 로그인 사용자 학습 중인 강의 제외
 
     const handleHashChange = () => {
       const newCate = getHashCategory();
@@ -56,13 +49,11 @@ const Main = () => {
     };
     window.addEventListener("hashchange", handleHashChange);
     return () => window.removeEventListener("hashchange", handleHashChange);
-  }, [selCate]);
+  }, [selCate, filterCartWithUserData]);
 
-  // 가격 포맷
   const formatPrice = (price) =>
     Number(price) === 0 ? "무료" : `₩${Number(price).toLocaleString()}`;
 
-  // 필터링 + 정렬된 데이터
   const getFilteredAndSortedData = useCallback(() => {
     let list =
       selCate === "전체"
@@ -95,43 +86,6 @@ const Main = () => {
     }
   };
 
-  const isInCart = (idx) => cart.some((item) => item.idx === idx);
-
-  const addToCart = (e, edu) => {
-    e.preventDefault();
-    e.stopPropagation();
-  
-    const storedUser = JSON.parse(sessionStorage.getItem("minfo"));
-    const userEduData = JSON.parse(localStorage.getItem("mypage-user-data")) || [];
-  
-    // 로그인한 경우: 학습 중 강의 체크
-    if (storedUser) {
-      const currentUser = userEduData.find((u) => u.uid === storedUser.uid);
-      const learningList = currentUser?.eduIng?.map((edu) => edu.eduId) || [];
-  
-      if (learningList.includes(edu.idx)) {
-        alert("이미 학습 중인 강의입니다.");
-        return;
-      }
-    }
-  
-    const alreadyInCart = cart.some((item) => item.idx === edu.idx);
-    const updatedCart = alreadyInCart
-      ? cart.filter((item) => item.idx !== edu.idx)
-      : [...cart, edu];
-  
-    setCart(updatedCart);
-    localStorage.setItem("cart", JSON.stringify(updatedCart));
-    window.dispatchEvent(new Event("cartUpdated"));
-  
-    alert(
-      alreadyInCart
-        ? "장바구니에서 삭제되었습니다!"
-        : "장바구니에 추가되었습니다!"
-    );
-  };
-  
-
   return (
     <div className="main-wrap">
       <h2>{selCate}</h2>
@@ -152,6 +106,7 @@ const Main = () => {
             </li>
           ))}
         </ul>
+
         <div className="sort-opt">
           <label>정렬</label>
           <select

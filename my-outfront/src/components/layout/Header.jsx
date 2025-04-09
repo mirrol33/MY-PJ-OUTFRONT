@@ -1,6 +1,8 @@
-import { memo, useEffect, useRef, useState } from "react";
+// 헤더영역 컴포넌트 : Header.jsx
+import { memo, useContext, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import "../../scss/header.scss";
+import { CartContext } from "../modules/CartContext";
 
 const categories = [
   "전체",
@@ -14,45 +16,30 @@ const categories = [
 
 const Header = memo(({ goPage, loginSts, setLoginSts }) => {
   const [searchKeyword, setSearchKeyword] = useState("");
-  const [cartCount, setCartCount] = useState(0);
   const [isSubOpen, setIsSubOpen] = useState(false);
   const subMenuRef = useRef(null);
-
+  const { cartCount } = useContext(CartContext);
   const publicUrl = process.env.PUBLIC_URL;
 
-  // 서브메뉴 외부 클릭 감지
+  // 외부 클릭 시 서브메뉴 닫기
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (subMenuRef.current && !subMenuRef.current.contains(e.target)) {
         setIsSubOpen(false);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // 검색 실행
   const handleSearch = () => {
-    if (!searchKeyword.trim()) return;
-    goPage("search", { state: { keyword: searchKeyword.trim() } });
+    const keyword = searchKeyword.trim();
+    if (!keyword) return;
+    goPage("search", { state: { keyword } });
   };
 
-  // 장바구니 수 실시간 반영
-  useEffect(() => {
-    const updateCartCount = () => {
-      const cart = JSON.parse(localStorage.getItem("cart")) || [];
-      setCartCount(cart.length);
-    };
-
-    updateCartCount();
-    window.addEventListener("storage", updateCartCount);
-    window.addEventListener("cartUpdated", updateCartCount);
-    return () => {
-      window.removeEventListener("storage", updateCartCount);
-      window.removeEventListener("cartUpdated", updateCartCount);
-    };
-  }, []);
-
+  // 로그아웃 처리
   const handleLogout = (e) => {
     e.preventDefault();
     setLoginSts(null);
@@ -60,6 +47,7 @@ const Header = memo(({ goPage, loginSts, setLoginSts }) => {
     goPage("/");
   };
 
+  // 유저 메뉴 렌더링
   const renderUserMenu = () => (
     <>
       {loginSts ? (
@@ -103,7 +91,10 @@ const Header = memo(({ goPage, loginSts, setLoginSts }) => {
           <li>
             <h1 className="logo">
               <a href={publicUrl}>
-                <img src={`${publicUrl}/images/main/inflearn_logo.png`} alt="logo" />
+                <img
+                  src={`${publicUrl}/images/main/inflearn_logo.png`}
+                  alt="logo"
+                />
               </a>
             </h1>
           </li>
@@ -127,7 +118,11 @@ const Header = memo(({ goPage, loginSts, setLoginSts }) => {
             </ul>
 
             {isSubOpen && (
-              <ul className="sub-category on" ref={subMenuRef} onMouseLeave={() => setIsSubOpen(false)}>
+              <ul
+                className="sub-category on"
+                ref={subMenuRef}
+                onMouseLeave={() => setIsSubOpen(false)}
+              >
                 {categories.map((category) => (
                   <li key={category}>
                     <a href={`${publicUrl}/#${category}`}>{category}</a>

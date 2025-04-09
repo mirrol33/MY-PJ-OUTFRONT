@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import "../../scss/mypage.scss";
 import { Link, useNavigate } from "react-router-dom";
 import userData from "../../js/data/user_data.json";
 import reviewData from "../../js/data/review_data.json";
+import { CartContext } from "../modules/CartContext";
 
-// 프로필 이미지 컴포넌트
 const ProfileImage = ({ profileImg, onChange }) => (
   <div>
     <label htmlFor="profile-upload">
@@ -26,24 +26,23 @@ const ProfileImage = ({ profileImg, onChange }) => (
 const Mypage = () => {
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState(null);
-  const [userEduList, setUserEduList] = useState([]);
   const [reviewList, setReviewList] = useState([]);
   const [selectedReview, setSelectedReview] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
   const [newReview, setNewReview] = useState({ grade: 0.5, text: "수강 후기를 작성해주세요" });
-  const [userBoardPosts, setUserBoardPosts] = useState([]);
   const [profileImg, setProfileImg] = useState(localStorage.getItem("profile-img") || "./images/mypage/1.png");
-  const [cart, setCart] = useState([]);
+  const { updateCart } = useContext(CartContext);
+
+  const [eduList, setEduList] = useState([]);
+  const [boardList, setBoardList] = useState([]);
 
   useEffect(() => {
-    // 1. 필요한 데이터 가져오기
-    const minfo = JSON.parse(sessionStorage.getItem("minfo")); // 로그인 정보
-    const storedCart = JSON.parse(localStorage.getItem("cart")) || []; // 장바구니
-    let storedUserData = JSON.parse(localStorage.getItem("mypage-user-data")); // 유저 학습 정보
-    const storedReviews = JSON.parse(localStorage.getItem("review-data")) || reviewData; // 수강평
-    const storedBoard = JSON.parse(localStorage.getItem("board-data")) || []; // 커뮤니티 게시글
+    const minfo = JSON.parse(sessionStorage.getItem("minfo"));
+    const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
+    let storedUserData = JSON.parse(localStorage.getItem("mypage-user-data"));
+    const storedReviews = JSON.parse(localStorage.getItem("review-data")) || reviewData;
+    const storedBoard = JSON.parse(localStorage.getItem("board-data")) || [];
 
-    // 2. 사용자 정보가 없으면 초기 세팅
     if (!storedUserData) {
       localStorage.setItem("mypage-user-data", JSON.stringify(userData));
       storedUserData = userData;
@@ -51,39 +50,32 @@ const Mypage = () => {
 
     setReviewList(storedReviews);
 
-    // 3. 로그인한 경우 처리
     if (minfo) {
       setUserInfo(minfo);
-
-      // 로그인한 사용자 정보 추출
       const currentUser = storedUserData.find(user => user.uid === minfo.uid);
       const eduIng = currentUser?.eduIng || [];
 
-      // 학습중인 강의 ID 목록 추출
       const learningIds = eduIng.map((edu) => edu.eduId);
+      const removedItems = storedCart.filter(item => learningIds.includes(item.idx));
+      const filteredCart = storedCart.filter(item => !learningIds.includes(item.idx));
 
-      // 장바구니에서 학습중인 강의 제거
-      const removedItems = storedCart.filter(item => learningIds.includes(item.idx)); // 제거될 항목
-      const filteredCart = storedCart.filter(item => !learningIds.includes(item.idx)); // 남길 항목
+      updateCart(filteredCart);
 
-      setCart(filteredCart);
-      localStorage.setItem("cart", JSON.stringify(filteredCart));
-      window.dispatchEvent(new Event("cartUpdated"));
-
-      // 제거된 항목이 있으면 알림
       if (removedItems.length > 0) {
         const removedNames = removedItems.map(item => `"${item.idx}"`).join(", ");
         alert(`이미 학습 중인 강의는 장바구니에서 제거되었습니다: ${removedNames}`);
       }
 
-      setUserEduList(eduIng);
-      setUserBoardPosts(storedBoard.filter(post => post.uid === minfo.uid));
+      setEduList(eduIng);
+      setBoardList(storedBoard.filter(post => post.uid === minfo.uid));
     } else {
-      // 비로그인: 장바구니 그대로 유지
-      setCart(storedCart);
-      window.dispatchEvent(new Event("cartUpdated"));
+      updateCart(storedCart);
     }
   }, []);
+
+  const memoizedBoardList = useMemo(() => boardList, [boardList]);
+
+  const memoizedUserEduList = useMemo(() => eduList, [eduList]);
 
   const openReviewPopup = (eduId) => {
     const userReview = reviewList.find(review => review.uid === userInfo.uid && review.eduId === eduId);
@@ -171,9 +163,9 @@ const Mypage = () => {
             <Link to="/myedu"><span>more</span></Link>
           </h3>
           <ul className="myedu-list">
-            {userEduList.length > 0 ? (
-              userEduList.map((edu) => {
-                const userReview = reviewList.find(r => r.uid === userInfo.uid && r.eduId === edu.eduId);
+            {memoizedUserEduList.length > 0 ? (
+              memoizedUserEduList.map((edu) => {
+                const userReview = reviewList.find(r => r.uid === userInfo?.uid && r.eduId === edu.eduId);
                 return (
                   <li key={edu.eduId}>
                     <picture onClick={() => navigate(`/detail/${edu.eduId}`)}>
@@ -207,8 +199,8 @@ const Mypage = () => {
             <Link to="/myedu"><span>more</span></Link>
           </h3>
           <ul className="myboard-list">
-            {userBoardPosts.length > 0 ? (
-              userBoardPosts.map((post) => (
+            {memoizedBoardList.length > 0 ? (
+              memoizedBoardList.map((post) => (
                 <li key={post.idx} onClick={() => navigate("/board", { state: { mode: "R", selData: post } })}>
                   <h4>{post.tit}</h4>
                   <p>{post.date} | 조회수: {post.cnt}</p>
@@ -221,7 +213,6 @@ const Mypage = () => {
         </div>
       </div>
 
-      {/* 수강평 팝업 */}
       {showPopup && selectedReview && (
         <div className="review-popup">
           <div className="popup-content">
