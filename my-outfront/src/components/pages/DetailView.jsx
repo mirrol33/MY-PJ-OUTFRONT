@@ -118,7 +118,6 @@ const DetailView = () => {
                 )}
                 &nbsp;({averageGrade}) 수강평 {reviews.length}개 수강생 31,831명
               </span>{" "}
-              
             </span>
           </div>
           <div className="edu-thumb">
@@ -216,7 +215,7 @@ const DetailView = () => {
           </div>
           {/* 강의소개 영역 */}
           <div className="detail-info-wrap">
-            <p>작성된 강의 소개가 없습니다...</p>
+            <p>작성된 강의 소개글이 없습니다...</p>
           </div>
         </section>
       </div>

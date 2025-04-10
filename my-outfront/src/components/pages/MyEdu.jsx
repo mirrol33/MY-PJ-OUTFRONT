@@ -77,9 +77,7 @@ function MyEdu() {
   const saveReview = () => {
     const updatedReviews = [...reviewList];
     const existingIndex = updatedReviews.findIndex(
-      (r) =>
-        r.uid === userInfo.uid &&
-        r.eduId === selectedReview.eduId
+      (r) => r.uid === userInfo.uid && r.eduId === selectedReview.eduId
     );
 
     if (existingIndex !== -1) {
@@ -163,11 +161,7 @@ function MyEdu() {
                           alt="별"
                           width="8px"
                         />
-                        <img
-                          src="./images/main/star.png"
-                          alt="별"
-                          width="8"
-                        />
+                        <img src="./images/main/star.png" alt="별" width="8" />
                         {review.grade})
                       </span>
                     ) : (
@@ -182,7 +176,7 @@ function MyEdu() {
           <li className="empty-msg">학습중인 강의가 없습니다.</li>
         )}
       </ul>
-
+      {/* 수강평 작성 팝업 */}
       {showPopup && selectedReview && (
         <div className="review-popup">
           <div className="popup-content">

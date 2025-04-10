@@ -22,18 +22,13 @@ const getHashCategory = () => {
 
 const Main = () => {
   const navigate = useNavigate();
-  const {
-    cart,
-    addToCart,
-    isInCart,
-    filterCartWithUserData,
-  } = useCart();
+  const { cart, addToCart, isInCart, filterCartWithUserData } = useCart();
 
   const [selCate, setSelCate] = useState(() => getHashCategory());
   const [currentPage, setCurrentPage] = useState(1);
   const [levelFilter, setLevelFilter] = useState("all");
   const [sortType, setSortType] = useState("default");
-  
+
   // 해시 변경 감지 + 필터된 장바구니 초기 설정
   useEffect(() => {
     filterCartWithUserData(); // 로그인 사용자 학습 중인 강의 제외

@@ -29,7 +29,8 @@ function CartList() {
   const filteredCart = useMemo(() => {
     if (!storedUser) return cart;
 
-    const userEduData = JSON.parse(localStorage.getItem("mypage-user-data")) || [];
+    const userEduData =
+      JSON.parse(localStorage.getItem("mypage-user-data")) || [];
     const currentUser = userEduData.find((u) => u.uid === storedUser.uid);
     const learningIds = currentUser?.eduIng?.map((edu) => edu.eduId) || [];
 
@@ -98,7 +99,8 @@ function CartList() {
       0
     );
 
-    let userEduData = JSON.parse(localStorage.getItem("mypage-user-data")) || [];
+    let userEduData =
+      JSON.parse(localStorage.getItem("mypage-user-data")) || [];
     const userIndex = userEduData.findIndex(
       (user) => user.uid === storedUser.uid
     );
