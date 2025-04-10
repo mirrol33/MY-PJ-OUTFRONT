@@ -254,150 +254,60 @@
                 }
               }
             }
-          }
-        }
-      }
-      .box {
-        h3 {
-          font-size: 2.4rem;
-          font-weight: 600;
-          margin: 24px 0;
-          line-height: 1.6;
-        }
-        p {
-          font-size: 1.6rem;
-          line-height: 1.6;
-        }
-        .box-list1 {
-          border: 1px solid #ddd;
-          border-radius: 1.2rem;
-          padding: 2rem;
-          margin: 24px 0;
-          ul li {
-            display: flex;
-            align-items: center;
-            font-size: 1.4rem;
-            line-height: 2;
-            gap: 1rem;
-            svg {
-              height: 16px;
-              color: #228be6;
-            }
-          }
-        }
-      }
-      .box-list2 {
-        font-size: 1.6rem;
-        line-height: 1.6;
-        .tit {
-          margin: 24px 0;
-          padding: 16px;
-          border-radius: 1.2rem;
-          background: #343a40;
-          line-height: 1.69;
-          color: #fff;
-          font-size: 16px;
-          font-weight: bold;
-          text-align: center;
-        }
-        h3 {
-          margin: 14px 0;
-        }
-        ul {
-          padding-bottom: 24px;
-          list-style: disc;
-        }
-      }
-      .box-list3 {
-        margin-top: 16px;
-        margin-bottom: 16px;
-        padding: 24px;
-        border-radius: 8px;
-        border: 1px solid #e9ecef;
-        background-color: #f8f9fa;
-        h3 {
-          margin: 0px;
-          text-align: center;
-        }
-        .card-wrapper {
-          display: flex;
-          position: relative;
-          width: 100%;
-          gap: 2%;
-          .card-el {
-            flex: 1 0 auto;
-            width: 48%;
-            div {
-              margin-top: 16px;
-              margin-bottom: 0px;
-              padding: 24px;
-              border-radius: 8px;
-              border: 1px solid #e9ecef;
-              background-color: #ffffff;
-              p {
-                line-height: 1.6;
-                &:first-child {
-                  margin: 0px;
-                  text-align: center;
-                  font-size: 30px;
+            .star-grade {
+              display: flex;
+              justify-content: flex-start;
+              align-items: center;
+              @include tablet-medium {
+                display: block;
+                em {
+                  display: block;
                 }
-                &:last-child {
-                  margin: 0px;
-                  text-align: center;
-                  font-size: 15px;
-                }
-              }
-            }
-          }
-        }
-      }
-      .box-list4 {
-        img {
-          width: 100%;
-        }
-      }
-      .box-list5 {
-        margin-top: 16px;
-        margin-bottom: 16px;
-        padding: 24px;
-        border-radius: 8px;
-        border: 1px solid #e9ecef;
-        background-color: #f8f9fa;
-        h3 {
-          margin: 14px 0;
-        }
-        .card-wrapper {
-          display: flex;
-          flex-wrap: wrap;
-          justify-content: space-between;
-          gap: 2%;
-          word-break: break-word;
-          .card-el {
-            flex: 1 0 auto;
-            width: 32%;
-            @include tablet-medium {
-              width: 48%;
-            }
-            margin-top: 16px;
-            margin-bottom: 0px;
-            padding: 24px;
-            border-radius: 8px;
-            border: 1px solid #e9ecef;
-            background-color: #ffffff;
-            text-align: center;
-            div {
-              max-width: 200px;
-              margin: 0 auto;
-              p {
-                font-size: 1.4rem;
-                line-height: 1.6;
               }
               b {
-                font-weight: 700;
+                padding-right: 4px;
+                @include tablet-medium {
+                  display: block;
+                }
+              }
+              .half-star:nth-child(2n) {
+                img {
+                  transform: scaleX(-1);
+                }
               }
             }
           }
         }
+      }
+    }
+  }
+  .detail-info-wrap {
+    padding: 2rem 0;
+    p {
+      font-size: 1.4rem;
+      text-align: center;
+      color: #868e96;
+    }
+  }
+  .star-grade {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    @include tablet-medium {
+      display: block;
+      em {
+        display: block;
+      }
+    }
+    b {
+      padding-right: 4px;
+      @include tablet-medium {
+        display: block;
+      }
+    }
+    .half-star:nth-child(2n) {
+      img {
+        transform: scaleX(-1);
       }
     }
   }

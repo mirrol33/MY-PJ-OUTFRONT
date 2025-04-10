@@ -5,8 +5,6 @@ import { useCart } from "../modules/CartContext";
 import "../../scss/main.scss";
 import eduData from "../../js/data/edu_data.json";
 
-
-
 const categories = [
   "전체",
   "개발프로그래밍",

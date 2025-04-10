@@ -195,8 +195,8 @@ const Mypage = () => {
         {/* 커뮤니티 게시글 */}
         <div className="box my-community">
           <h3>
-            <Link to="/myedu">내 커뮤니티 게시글</Link>
-            <Link to="/myedu"><span>more</span></Link>
+            <Link to="/board">내 커뮤니티 게시글</Link>
+            <Link to="/board"><span>more</span></Link>
           </h3>
           <ul className="myboard-list">
             {memoizedBoardList.length > 0 ? (
