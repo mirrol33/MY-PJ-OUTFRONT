@@ -10,14 +10,14 @@ function CartList() {
   const [storedUser, setStoredUser] = useState(null);
   const navigate = useNavigate();
 
-  // ✅ 최초 사용자 데이터 저장
+  // 최초 사용자 데이터 저장
   useEffect(() => {
     if (!localStorage.getItem("mypage-user-data")) {
       localStorage.setItem("mypage-user-data", JSON.stringify(userData));
     }
   }, []);
 
-  // ✅ 로그인 유저 정보 로딩
+  // 로그인 유저 정보 로딩
   useEffect(() => {
     const userInfo = sessionStorage.getItem("minfo");
     if (userInfo) {
@@ -25,7 +25,7 @@ function CartList() {
     }
   }, []);
 
-  // ✅ 수강 중 강의 제거된 장바구니 계산 (useMemo)
+  // 수강 중 강의 제거된 장바구니
   const filteredCart = useMemo(() => {
     if (!storedUser) return cart;
 
@@ -36,11 +36,9 @@ function CartList() {
     return cart.filter((item) => !learningIds.includes(item.idx));
   }, [cart, storedUser]);
 
-  // ✅ cart가 변경되었을 경우만 updateCart 호출
   useEffect(() => {
     const cartIds = cart.map((item) => item.idx);
     const filteredIds = filteredCart.map((item) => item.idx);
-
     const isDifferent =
       cartIds.length !== filteredIds.length ||
       cartIds.some((id, i) => id !== filteredIds[i]);
@@ -69,7 +67,9 @@ function CartList() {
 
   const deleteSelected = () => {
     if (selectedItems.length === 0) return alert("선택된 항목이 없습니다.");
-    const updated = filteredCart.filter((item) => !selectedItems.includes(item.idx));
+    const updated = filteredCart.filter(
+      (item) => !selectedItems.includes(item.idx)
+    );
     updateCart(updated);
     setSelectedItems([]);
   };
@@ -93,40 +93,57 @@ function CartList() {
     const selectedCourses = filteredCart.filter((item) =>
       selectedItems.includes(item.idx)
     );
-    const totalPrice = selectedCourses.reduce((sum, item) => sum + Number(item.gPrice), 0);
+    const totalPrice = selectedCourses.reduce(
+      (sum, item) => sum + Number(item.gPrice),
+      0
+    );
 
-    const userEduData = JSON.parse(localStorage.getItem("mypage-user-data")) || [];
-    const userIndex = userEduData.findIndex((user) => user.uid === storedUser.uid);
+    let userEduData = JSON.parse(localStorage.getItem("mypage-user-data")) || [];
+    const userIndex = userEduData.findIndex(
+      (user) => user.uid === storedUser.uid
+    );
+
+    const newEduList = selectedCourses.map((course) => ({
+      eduId: course.idx,
+      eduName: course.gName,
+      eduRate: "0",
+      eduState: "학습전",
+    }));
 
     if (userIndex !== -1) {
+      // 기존 유저: eduIng에 강의 추가
       const existingEdu = userEduData[userIndex].eduIng || [];
-
-      const newEdu = selectedCourses.map((course) => ({
-        eduId: course.idx,
-        eduName: course.gName,
-        eduRate: "0", // 초기값
-        eduState: "학습전", // 초기값
-      }));
-
-      const updatedEdu = [
+      const mergedEdu = [
         ...existingEdu,
-        ...newEdu.filter(
+        ...newEduList.filter(
           (newItem) => !existingEdu.some((edu) => edu.eduId === newItem.eduId)
         ),
       ];
-
-      userEduData[userIndex].eduIng = updatedEdu;
-      localStorage.setItem("mypage-user-data", JSON.stringify(userEduData));
+      userEduData[userIndex].eduIng = mergedEdu;
+    } else {
+      // 신규 유저: 새 객체 생성
+      const newUser = {
+        idx: Date.now(), // 고유값
+        uid: storedUser.uid,
+        unm: storedUser.unm,
+        umail: storedUser.eml,
+        eduIng: newEduList,
+      };
+      userEduData.push(newUser);
     }
 
-    const remaining = filteredCart.filter((item) => !selectedItems.includes(item.idx));
+    localStorage.setItem("mypage-user-data", JSON.stringify(userEduData));
+
+    const remaining = filteredCart.filter(
+      (item) => !selectedItems.includes(item.idx)
+    );
     updateCart(remaining);
     setSelectedItems([]);
 
     alert(
-      `총 ${selectedCourses.length}개의 강의 결제 완료!\n결제 금액: ${formatPrice(
-        totalPrice
-      )}`
+      `총 ${
+        selectedCourses.length
+      }개의 강의 결제 완료!\n결제 금액: ${formatPrice(totalPrice)}`
     );
     navigate("/mypage");
   };

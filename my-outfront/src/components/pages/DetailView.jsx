@@ -116,7 +116,7 @@ const DetailView = () => {
                     </span>
                   )
                 )}
-                &nbsp;평균 {averageGrade}점 수강평 {reviews.length}개 수강생 31,831명
+                &nbsp;({averageGrade}) 수강평 {reviews.length}개 수강생 31,831명
               </span>{" "}
               
             </span>
@@ -210,13 +210,13 @@ const DetailView = () => {
                   </li>
                 ))
               ) : (
-                <p className="empty-msg">이 강의는 리뷰가 없습니다... ㅠㅠ</p>
+                <p className="empty-msg">이 강의는 리뷰가 없습니다...</p>
               )}
             </ul>
           </div>
           {/* 강의소개 영역 */}
           <div className="detail-info-wrap">
-            <p>작성된 강의 소개가 없습니다.</p>
+            <p>작성된 강의 소개가 없습니다...</p>
           </div>
         </section>
       </div>
