@@ -22,7 +22,7 @@ const getHashCategory = () => {
 
 const Main = () => {
   const navigate = useNavigate();
-  const { cart, addToCart, isInCart, filterCartWithUserData } = useCart();
+  const { addToCart, isInCart, filterCartWithUserData } = useCart();
 
   const [selCate, setSelCate] = useState(() => getHashCategory());
   const [currentPage, setCurrentPage] = useState(1);

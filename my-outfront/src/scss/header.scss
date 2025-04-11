@@ -111,7 +111,6 @@
     }
     .member-nav {
       position: relative;
-      width: 100%;
       ul {
         display: flex;
         gap: 2rem;
@@ -164,6 +163,7 @@
   .aside-toggle {
     display: flex;
     flex-direction: row-reverse;
+    justify-content: flex-end;
     align-items: center;
     gap: 20px;
     position: relative;
