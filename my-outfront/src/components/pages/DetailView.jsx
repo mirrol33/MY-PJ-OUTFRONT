@@ -116,7 +116,12 @@ const DetailView = () => {
                     </span>
                   )
                 )}
-                &nbsp;({averageGrade}) 수강평 {reviews.length}개 수강생 31,831명
+                {
+                  reviews.length > 0 && 
+                  <>
+                    &nbsp;({averageGrade}) 수강평 {reviews.length}개
+                  </>
+                }
               </span>{" "}
             </span>
           </div>

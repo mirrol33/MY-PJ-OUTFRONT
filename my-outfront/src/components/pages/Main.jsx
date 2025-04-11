@@ -5,7 +5,7 @@ import { useCart } from "../modules/CartContext";
 import "../../scss/main.scss";
 import eduData from "../../js/data/edu_data.json";
 
-const categories = [
+const eduCate = [
   "전체",
   "개발프로그래밍",
   "게임개발",
@@ -17,7 +17,7 @@ const categories = [
 
 const getHashCategory = () => {
   const hash = decodeURIComponent(window.location.hash.replace("#", ""));
-  return categories.includes(hash) ? hash : "전체";
+  return eduCate.includes(hash) ? hash : "전체";
 };
 
 const Main = () => {
@@ -84,8 +84,8 @@ const Main = () => {
       <h2>{selCate}</h2>
       <div className="edu-menu-wrap">
         <ul className="edu-menu">
-          {categories.map((category, i) => (
-            <li key={category}>
+          {eduCate.map((category, i) => (
+            <li key={i}>
               <button
                 onClick={() => (window.location.hash = category)}
                 className={selCate === category ? "active" : ""}
@@ -150,9 +150,9 @@ const Main = () => {
                   }`}
                 ></i>
               </a>
-              <a className="heart-btn" href="#none">
+              {/* <a className="heart-btn" href="#none">
                 <i className="fa-solid fa-heart"></i>
-              </a>
+              </a> */}
             </div>
           </li>
         ))}

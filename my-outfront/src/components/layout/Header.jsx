@@ -1,10 +1,9 @@
-// 헤더영역 컴포넌트 : Header.jsx
 import { memo, useContext, useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../../scss/header.scss";
 import { CartContext } from "../modules/CartContext";
 
-const categories = [
+const eduCate = [
   "전체",
   "개발프로그래밍",
   "게임개발",
@@ -17,11 +16,29 @@ const categories = [
 const Header = memo(({ goPage, loginSts, setLoginSts }) => {
   const [searchKeyword, setSearchKeyword] = useState("");
   const [isSubOpen, setIsSubOpen] = useState(false);
+  const [isAsideOpen, setIsAsideOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 1000);
   const subMenuRef = useRef(null);
-  const { cartCount } = useContext(CartContext);
   const publicUrl = process.env.PUBLIC_URL;
+  const { cartCount } = useContext(CartContext);
+  const navigate = useNavigate();
 
-  // 외부 클릭 시 서브메뉴 닫기
+  const closeAside = () => setIsAsideOpen(false);
+  const toggleAside = () => setIsAsideOpen((prev) => !prev);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const isNowMobile = window.innerWidth <= 1000;
+      setIsMobile(isNowMobile);
+      if (!isNowMobile) {
+        setIsAsideOpen(false);
+        setIsSubOpen(false);
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (subMenuRef.current && !subMenuRef.current.contains(e.target)) {
@@ -32,51 +49,75 @@ const Header = memo(({ goPage, loginSts, setLoginSts }) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // 검색 실행
   const handleSearch = () => {
     const keyword = searchKeyword.trim();
     if (!keyword) return;
     goPage("search", { state: { keyword } });
+    closeAside();
   };
 
-  // 로그아웃 처리
   const handleLogout = (e) => {
     e.preventDefault();
-    setLoginSts(null);
     sessionStorage.removeItem("minfo");
-    goPage("/");
+    setLoginSts(null);
+    navigate("/");
+    closeAside();
   };
 
-  // 유저 메뉴 렌더링
+  const handleCategoryClick = (category) => {
+    window.location.href = `${publicUrl}/#${category}`;
+    closeAside();
+  };
+
+  const handleLectureMenuEvent = (eventType) => {
+    if (!isMobile) {
+      if (eventType === "enter") setIsSubOpen(true);
+      if (eventType === "leave") setIsSubOpen(false);
+    }
+  };
+
   const renderUserMenu = () => (
     <>
       {loginSts ? (
-        <li>
-          <a href="#" onClick={handleLogout} className="logout">
-            <i className="fa-solid fa-arrow-up-from-bracket" title="로그아웃"></i>
-          </a>
-        </li>
+        <>
+          <li>
+            <a href="#" onClick={handleLogout} className="logout">
+              <i
+                className="fa-solid fa-arrow-up-from-bracket"
+                title="로그아웃"
+              ></i>
+            </a>
+          </li>
+          <li>
+            <Link to="/myedu" onClick={closeAside}>
+              <i className="fa-solid fa-play" title="내 강의"></i>
+            </Link>
+          </li>
+        </>
       ) : (
         <>
           <li>
-            <Link to="/login">
-              <i className="fa-solid fa-arrow-right-to-bracket" title="로그인"></i>
+            <Link to="/login" onClick={closeAside}>
+              <i
+                className="fa-solid fa-arrow-right-to-bracket"
+                title="로그인"
+              ></i>
             </Link>
           </li>
           <li>
-            <Link to="/join">
+            <Link to="/join" onClick={closeAside}>
               <i className="fa-solid fa-user-plus" title="회원가입"></i>
             </Link>
           </li>
         </>
       )}
       <li>
-        <Link to="/mypage">
+        <Link to="/mypage" onClick={closeAside}>
           <i className="fa-solid fa-user" title="마이페이지"></i>
         </Link>
       </li>
       <li className="cart-area">
-        <Link to="/cartlist">
+        <Link to="/cartlist" onClick={closeAside}>
           <i className="fa-solid fa-cart-shopping" title="수강바구니"></i>
           {cartCount > 0 && <span className="cart-count">{cartCount}</span>}
         </Link>
@@ -90,65 +131,98 @@ const Header = memo(({ goPage, loginSts, setLoginSts }) => {
         <ul>
           <li>
             <h1 className="logo">
-              <a href={publicUrl}>
+              <Link to="/">
                 <img
                   src={`${publicUrl}/images/main/inflearn_logo.png`}
                   alt="logo"
                 />
-              </a>
+              </Link>
             </h1>
           </li>
 
-          <li className="top-category">
-            <ul className="main-category">
-              <li>
-                <a
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setIsSubOpen((prev) => !prev);
-                  }}
-                >
-                  강의
-                </a>
-              </li>
-              <li>
-                <Link to="/board">커뮤니티</Link>
-              </li>
-            </ul>
-
-            {isSubOpen && (
-              <ul
-                className="sub-category on"
-                ref={subMenuRef}
-                onMouseLeave={() => setIsSubOpen(false)}
-              >
-                {categories.map((category) => (
-                  <li key={category}>
-                    <a href={`${publicUrl}/#${category}`}>{category}</a>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </li>
-
-          <li className="member-nav">
-            <ul>{renderUserMenu()}</ul>
-          </li>
-
-          <li className="search-area">
-            <input
-              className="search"
-              type="text"
-              placeholder="검색어를 입력하세요"
-              value={searchKeyword}
-              onChange={(e) => setSearchKeyword(e.target.value)}
-              onKeyUp={(e) => e.key === "Enter" && handleSearch()}
-            />
-            <button className="sbtn" onClick={handleSearch}>
-              검색
+          <li className="ham-menu">
+            <button onClick={toggleAside}>
+              <img
+                src={`${publicUrl}/images/main/ham_menu.svg`}
+                alt="ham-menu"
+              />
             </button>
           </li>
+
+          <div
+            className={`overlay ${isAsideOpen ? "open" : ""}`}
+            onClick={closeAside}
+          ></div>
+
+          <div className={`aside-toggle ${isAsideOpen ? "open" : ""}`}>
+            <li className="search-area">
+              <input
+                className="search"
+                type="text"
+                placeholder="검색어를 입력하세요"
+                value={searchKeyword}
+                onChange={(e) => setSearchKeyword(e.target.value)}
+                onKeyUp={(e) => e.key === "Enter" && handleSearch()}
+              />
+              <button className="sbtn" onClick={handleSearch} title="검색">
+                <i className="fa-solid fa-magnifying-glass"></i>
+              </button>
+
+              <button className="sbtn close" onClick={closeAside}>
+                <i className="fa-solid fa-xmark"></i>
+              </button>
+            </li>
+
+            <li className="member-nav">
+              <ul>{renderUserMenu()}</ul>
+            </li>
+
+            <li className="top-category">
+              <ul className="main-category">
+                <li
+                  onMouseEnter={() => handleLectureMenuEvent("enter")}
+                  ref={subMenuRef}
+                >
+                  <a
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (isMobile) setIsSubOpen((prev) => !prev);
+                    }}
+                  >
+                    강의
+                  </a>
+                </li>
+                <li>
+                  <Link to="/board" onClick={closeAside}>
+                    커뮤니티
+                  </Link>
+                </li>
+              </ul>
+
+              {isSubOpen && (
+                <ul
+                  className="sub-category on"
+                  onMouseLeave={() => handleLectureMenuEvent("leave")}
+                  ref={subMenuRef}
+                >
+                  {eduCate.map((category,i) => (
+                    <li key={i}>
+                      <a
+                        href="#"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleCategoryClick(category);
+                        }}
+                      >
+                        {category}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </li>
+          </div>
         </ul>
       </div>
     </header>
