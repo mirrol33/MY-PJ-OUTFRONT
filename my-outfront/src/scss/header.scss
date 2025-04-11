@@ -111,6 +111,10 @@
     }
     .member-nav {
       position: relative;
+      width: auto;
+      @include tablet-medium {
+        width: 100%;
+      }
       ul {
         display: flex;
         gap: 2rem;
@@ -210,7 +214,6 @@
         border-radius: 4px;
       }
       button {
-        // width: 10%;
         border-radius: 4px;
       }
     }
