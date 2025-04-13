@@ -173,7 +173,7 @@ function MyEdu() {
             );
           })
         ) : (
-          <li className="empty-msg">학습중인 강의가 없습니다.</li>
+          <li className="empty-msg">현재 학습중인 강의가 없습니다.</li>
         )}
       </ul>
       {/* 수강평 작성 팝업 */}

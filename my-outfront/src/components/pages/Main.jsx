@@ -66,7 +66,7 @@ const Main = () => {
   }, [selCate, levelFilter, sortType]);
 
   const sortedList = getFilteredAndSortedData();
-  const itemsPerPage = 15;
+  const itemsPerPage = 10;
   const totalPages = Math.ceil(sortedList.length / itemsPerPage);
   const currentList = sortedList.slice(
     (currentPage - 1) * itemsPerPage,
