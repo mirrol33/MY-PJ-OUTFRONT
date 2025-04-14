@@ -6,28 +6,28 @@
     "umail": "min1004@outfront.co.kr",
     "eduIng": [
       {
-        "eduId" : 1,
+        "eduId": 1,
         "eduName": "김영한의 자바 입문 - 코드로 시작하는 자바 첫걸음",
-        "eduRate": "60",
-        "eduState" : "학습중"
+        "eduRate": 60,
+        "eduState": "학습중"
       },
       {
-        "eduId" : 2,
+        "eduId": 2,
         "eduName": "프로그래밍 시작하기 : 파이썬 입문 (Inflearn Original)",
-        "eduRate": "100",
-        "eduState" : "완강"
+        "eduRate": 100,
+        "eduState": "완강"
       },
       {
-        "eduId" : 3,
+        "eduId": 3,
         "eduName": "[개발부터 수익화까지] AI로 코드 한 줄 짜지 않고 만드는 IT 올인원 실전 프로젝트!",
-        "eduRate": "0",
-        "eduState" : "학습전"
+        "eduRate": 0,
+        "eduState": "학습전"
       },
       {
-        "eduId" : 4,
+        "eduId": 4,
         "eduName": "핵심만 쏙쏙 Jira&Confluence",
-        "eduRate": "10",
-        "eduState" : "학습중"
+        "eduRate": 0,
+        "eduState": "학습중"
       }
     ]
   },

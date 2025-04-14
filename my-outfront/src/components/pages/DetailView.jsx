@@ -116,12 +116,11 @@ const DetailView = () => {
                     </span>
                   )
                 )}
-                {
-                  reviews.length > 0 && 
+                {reviews.length > 0 && (
                   <>
                     &nbsp;({averageGrade}) 수강평 {reviews.length}개
                   </>
-                }
+                )}
               </span>{" "}
             </span>
           </div>
@@ -130,6 +129,12 @@ const DetailView = () => {
               src={`../images/edu_thumb/${edu.idx}.png`}
               alt={`교육 이미지 ${edu.idx}`}
             />
+            <button
+              className="edu-btn"
+              onClick={() => navigate(`/videodetail/${edu.idx}`)}
+            >
+              강의 미리보기
+            </button>
           </div>
         </div>
       </div>

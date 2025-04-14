@@ -1,0 +1,84 @@
+@import "../variables";
+
+.video-detail-wrap {
+    position: relative;
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    .video-area {
+        width: 80%;
+        min-height: 100svh;
+        padding: 80px 24px 0;
+        box-sizing: border-box;
+        .back-btn{
+            position: absolute;
+            top: 24px;
+            left: 24px;
+            padding: 10px 24px;
+            cursor: pointer;
+        }
+        iframe {
+            width: 100%;
+            margin: 0 auto;
+            aspect-ratio: 16/9;
+        }
+    }
+    .aside-area {
+        width: 20%;
+        border-left: 1px solid #ddd;
+        background: #fff;
+        box-sizing: border-box;
+        font-size: 1.4rem;
+        line-height: normal;
+        .edu-title {
+            padding: 24px 24px 8px;
+            font-size: 1.6rem;
+            font-weight: 600;
+        }
+        .edu-rate {
+            padding: 8px 24px 24px;
+        }
+        ul {
+            h3 {
+                padding: 20px 24px;
+                font-weight: 600;
+                background: #f1f1f1;
+                text-transform: uppercase;
+            }
+            li {
+                padding: 14px 24px;
+                border-top: 1px solid #ddd;
+                &:first-of-type {
+                    border-top: 0;
+                }
+                &.active {
+                    background-color: $color-primary;
+                    a{
+                        color: #fff;
+                    }
+                }
+            }
+        }
+    }
+}
+.empty {
+    margin: 0 auto;
+    min-height: calc(100svh - 60px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    button {
+        margin: 24px auto;
+        padding: 10px 24px;
+        text-align: center;
+        display: block;
+        cursor: pointer;
+    }
+    .empty-msg {
+        width: 100%;
+        font-size: 1.6rem;
+        text-align: center;
+        color: $color-midgray;
+    }
+}

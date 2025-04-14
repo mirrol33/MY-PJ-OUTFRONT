@@ -15,6 +15,7 @@ import Board from "./components/pages/Board.jsx";
 import CartList from "./components/modules/CartList.jsx";
 import SearchPage from "./components/pages/SearchPage.jsx";
 import { CartProvider } from "./components/modules/CartContext.jsx";
+import VideoDetail from "./components/pages/VideoDetail.jsx";
 
 // 메인 컴포넌트 ///////////////////////////
 export default function MainComponent() {
@@ -26,6 +27,7 @@ export default function MainComponent() {
           <Route path="/" element={<Layout />}>
             <Route index element={<Main />} />
             <Route path="/detail/:id" element={<DetailView />} />
+            <Route path="/videodetail/:id" element={<VideoDetail />} />
             <Route path="/cartlist" element={<CartList />} />
             <Route path="/mypage" element={<Mypage />} />
             <Route path="/myedu" element={<MyEdu />} />
