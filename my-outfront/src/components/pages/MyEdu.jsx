@@ -138,7 +138,7 @@ function MyEdu() {
 
             return (
               <li key={edu.eduId}>
-                <picture onClick={() => navigate(`/detail/${edu.eduId}`)}>
+                <picture onClick={() => navigate(`/videodetail/${edu.eduId}`)}>
                   <img
                     src={`./images/edu_thumb/${edu.eduId}.png`}
                     alt={`강의 이미지 ${edu.eduId}`}
@@ -146,7 +146,7 @@ function MyEdu() {
                 </picture>
                 <h4>{edu.eduName}</h4>
                 <p>
-                  {edu.eduState} ({edu.eduRate}%)
+                  진도율: ({edu.eduRate}%)
                 </p>
                 {isComplete && (
                   <button

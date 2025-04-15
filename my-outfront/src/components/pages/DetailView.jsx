@@ -13,7 +13,6 @@ const DetailView = () => {
   const [edu, setEdu] = useState(null);
   const [reviews, setReviews] = useState([]);
   const [userInfo, setUserInfo] = useState(null);
-  const [userEduState, setUserEduState] = useState(null);
   const [userEduRate, setUserEduRate] = useState(null);
 
   const { addToCart, updateCart, isInCart } = useCart(); // ✅ CartContext 훅 사용
@@ -35,7 +34,6 @@ const DetailView = () => {
           (course) => course.eduId === Number(id)
         );
         if (enrolledCourse) {
-          setUserEduState(enrolledCourse.eduState);
           setUserEduRate(enrolledCourse.eduRate);
         }
       }
@@ -129,12 +127,14 @@ const DetailView = () => {
               src={`../images/edu_thumb/${edu.idx}.png`}
               alt={`교육 이미지 ${edu.idx}`}
             />
-            <button
-              className="edu-btn"
-              onClick={() => navigate(`/videodetail/${edu.idx}`)}
-            >
-              강의 미리보기
-            </button>
+            {userEduRate && (
+              <button
+                className="edu-btn"
+                onClick={() => navigate(`/videodetail/${edu.idx}`)}
+              >
+                학습하러 가기
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -142,7 +142,11 @@ const DetailView = () => {
       <div className="detail-content">
         <aside>
           <div className="detail-aside-wrap">
-            <div className={`sale-msg ${userEduState ? "displaynone" : ""}`}>
+            <div
+              className={`sale-msg ${
+                userEduRate !== null ? "displaynone" : ""
+              }`}
+            >
               {userInfo ? `${userInfo.unm}님` : "회원 가입하면"} 첫 구매 할인 중
               (1일 남음)
             </div>
@@ -150,11 +154,9 @@ const DetailView = () => {
               <p className="price">
                 <b>{formatPrice(edu.gPrice)}</b>
               </p>
-              {userEduState ? (
+              {userEduRate !== null ? (
                 <button className="edu-state-btn">
-                  <Link to="/myedu">
-                    {userEduState}(진행률:{userEduRate}%)
-                  </Link>
+                  <Link to="/myedu">내 학습 진도율 ({userEduRate}%)</Link>
                 </button>
               ) : (
                 <>

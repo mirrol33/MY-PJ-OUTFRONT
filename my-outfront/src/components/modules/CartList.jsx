@@ -109,7 +109,7 @@ function CartList() {
       eduId: course.idx,
       eduName: course.gName,
       eduRate: "0",
-      eduState: "학습전",
+      "watchedVideos" : [],
     }));
 
     if (userIndex !== -1) {

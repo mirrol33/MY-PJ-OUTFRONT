@@ -218,7 +218,7 @@ const Mypage = () => {
                     </picture>
                     <h4>{edu.eduName}</h4>
                     <p>
-                      {edu.eduState} ({edu.eduRate}%)
+                      진도율: ({edu.eduRate}%)
                     </p>
                     {parseInt(edu.eduRate) >= 60 && (
                       <button
