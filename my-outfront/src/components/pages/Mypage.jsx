@@ -1,3 +1,5 @@
+// 회원 마이페이지 : Mypage.jsx
+
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import "../../scss/mypage.scss";
 import { Link, useNavigate } from "react-router-dom";
