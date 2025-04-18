@@ -5,11 +5,19 @@
     width: 100%;
     margin: 0 auto;
     display: flex;
+    @include tablet-medium {
+        flex-direction: column;
+        align-items: center;
+    }
     .video-area {
         width: 80%;
-        min-height: 100svh;
         padding: 80px 24px 0;
         box-sizing: border-box;
+        @include tablet-medium {
+            width: 96%;
+            padding: 0;
+            min-height: auto;
+        }
         .back-btn{
             position: absolute;
             top: 24px;
@@ -23,6 +31,10 @@
             aspect-ratio: 16/9;
         }
     }
+    .video-des{
+        font-size: 1.4rem;
+        padding: 4rem 0;
+    }
     .aside-area {
         width: 20%;
         border-left: 1px solid #ddd;
@@ -30,6 +42,10 @@
         box-sizing: border-box;
         font-size: 1.4rem;
         line-height: normal;
+        @include tablet-medium {
+            width: 96%;
+            border: 1px solid #ddd;
+        }
         .edu-title {
             padding: 24px 24px 8px;
             font-size: 1.6rem;

@@ -7,13 +7,13 @@
         "vId": 101,
         "vUrl": "https://www.youtube.com/embed/fT9iFFAt60E?si=jST2IdRNBfT30k73",
         "vTit": "누구든지 하는 리액트 초심자를 위한 리액트 핵심 강좌 #1 소개",
-        "vTxt": "vIdeo Description 1-1"
+        "vTxt": "누구든지 하는 리액트 초심자를 위한 리액트 핵심 강좌 #1 소개"
       },
       {
         "vId": 102,
         "vUrl": "https://www.youtube.com/embed/_aBq1SKl6yQ?si=o8B5xS2op4Zg7B4U",
         "vTit": "누구든지 하는 리액트 #2 프론트엔드 라이브러리란 무엇인가?",
-        "vTxt": "vIdeo Description 1-2"
+        "vTxt": "누구든지 하는 리액트 #2 프론트엔드 라이브러리란 무엇인가?"
       }
     ],
     "section2": [
@@ -47,6 +47,82 @@
   },
   {
     "eduId": 2,
+    "eduTit": "프로그래밍 시작하기 : 파이썬 입문 (Inflearn Original)",
+    "section1": [
+      {
+        "vId": 101,
+        "vUrl": "https://www.youtube.com/embed/fT9iFFAt60E?si=jST2IdRNBfT30k73",
+        "vTit": "누구든지 하는 리액트 초심자를 위한 리액트 핵심 강좌 #1 소개",
+        "vTxt": "vIdeo Description 1-1"
+      },
+      {
+        "vId": 102,
+        "vUrl": "https://www.youtube.com/embed/_aBq1SKl6yQ?si=o8B5xS2op4Zg7B4U",
+        "vTit": "누구든지 하는 리액트 #2 프론트엔드 라이브러리란 무엇인가?",
+        "vTxt": "vIdeo Description 1-2"
+      }
+    ],
+    "section2": [
+      {
+        "vId": 201,
+        "vUrl": "https://www.youtube.com/embed/201",
+        "vTit": "vIdeo Title 2-1",
+        "vTxt": "vIdeo Description 2-1"
+      },
+      {
+        "vId": 202,
+        "vUrl": "https://www.youtube.com/embed/202",
+        "vTit": "vIdeo Title 2-2",
+        "vTxt": "vIdeo Description 2-2"
+      },
+      {
+        "vId": 203,
+        "vUrl": "https://www.youtube.com/embed/203",
+        "vTit": "vIdeo Title 2-3",
+        "vTxt": "vIdeo Description 2-3"
+      }
+    ]
+  },
+  {
+    "eduId": 3,
+    "eduTit": "프로그래밍 시작하기 : 파이썬 입문 (Inflearn Original)",
+    "section1": [
+      {
+        "vId": 101,
+        "vUrl": "https://www.youtube.com/embed/fT9iFFAt60E?si=jST2IdRNBfT30k73",
+        "vTit": "누구든지 하는 리액트 초심자를 위한 리액트 핵심 강좌 #1 소개",
+        "vTxt": "vIdeo Description 1-1"
+      },
+      {
+        "vId": 102,
+        "vUrl": "https://www.youtube.com/embed/_aBq1SKl6yQ?si=o8B5xS2op4Zg7B4U",
+        "vTit": "누구든지 하는 리액트 #2 프론트엔드 라이브러리란 무엇인가?",
+        "vTxt": "vIdeo Description 1-2"
+      }
+    ],
+    "section2": [
+      {
+        "vId": 201,
+        "vUrl": "https://www.youtube.com/embed/201",
+        "vTit": "vIdeo Title 2-1",
+        "vTxt": "vIdeo Description 2-1"
+      },
+      {
+        "vId": 202,
+        "vUrl": "https://www.youtube.com/embed/202",
+        "vTit": "vIdeo Title 2-2",
+        "vTxt": "vIdeo Description 2-2"
+      },
+      {
+        "vId": 203,
+        "vUrl": "https://www.youtube.com/embed/203",
+        "vTit": "vIdeo Title 2-3",
+        "vTxt": "vIdeo Description 2-3"
+      }
+    ]
+  },
+  {
+    "eduId": 4,
     "eduTit": "프로그래밍 시작하기 : 파이썬 입문 (Inflearn Original)",
     "section1": [
       {

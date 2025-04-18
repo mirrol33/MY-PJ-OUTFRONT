@@ -134,7 +134,7 @@ const DetailView = () => {
                 {
                   userEduRate !== null ? (
                     <>
-                    학습하러 가기
+                    강의 학습하기 (진도율: {userEduRate}%)
                     </>
                   ) : (
                     <>
@@ -164,7 +164,7 @@ const DetailView = () => {
               </p>
               {userEduRate !== null ? (
                 <button className="edu-state-btn">
-                  <Link to="/myedu">내 학습 진도율 ({userEduRate}%)</Link>
+                  <Link to="/myedu">내 학습 리스트 보러가기</Link>
                 </button>
               ) : (
                 <>
