@@ -1,10 +1,13 @@
 @import "./variables";
 
 .my-edu-wrap {
-  margin: 40px auto 80px;
+  margin: 0 auto;
   max-width: 1440px;
   padding: 0 24px;
   box-sizing: border-box;
+  @include tablet-medium {
+    margin: 100px auto;
+  }
   h2 {
     font-size: 2.4rem;
     font-weight: 600;

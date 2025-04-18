@@ -179,6 +179,24 @@ const Mypage = () => {
     reader.readAsDataURL(file);
   };
 
+  // 수강평 삭제
+  const deleteReview = () => {
+    if (!selectedReview) return;
+  
+    const updatedList = reviewList.filter(
+      (review) =>
+        !(
+          review.uid === selectedReview.uid &&
+          review.eduId === selectedReview.eduId
+        )
+    );
+  
+    setReviewList(updatedList);
+    localStorage.setItem("review-data", JSON.stringify(updatedList));
+    alert("수강평이 삭제되었습니다.");
+    closePopup();
+  };
+
   return (
     <div className="mypage-wrap">
       <div className="mypage-top">
@@ -217,9 +235,7 @@ const Mypage = () => {
                       />
                     </picture>
                     <h4>{edu.eduName}</h4>
-                    <p>
-                      진도율: ({edu.eduRate}%)
-                    </p>
+                    <p>진도율: ({edu.eduRate}%)</p>
                     {parseInt(edu.eduRate) >= 60 && (
                       <button
                         className="my-review-btn"
@@ -318,6 +334,10 @@ const Mypage = () => {
             </ul>
             <div>
               <button onClick={saveReview}>저장</button>
+              {reviewList.some(
+  (r) =>
+    r.uid === selectedReview.uid && r.eduId === selectedReview.eduId
+) && <button onClick={deleteReview}>삭제</button>}
               <button onClick={closePopup}>닫기</button>
             </div>
           </div>

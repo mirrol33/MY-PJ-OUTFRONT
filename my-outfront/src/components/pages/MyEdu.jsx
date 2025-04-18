@@ -1,3 +1,5 @@
+// 회원 내학습 페이지 : MyEdu.jsx
+
 import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../scss/myedu.scss";
@@ -21,7 +23,7 @@ function MyEdu() {
   });
   const [showPopup, setShowPopup] = useState(false);
 
-  // 🔸 초기 로딩: 유저, 강의, 리뷰 세팅
+  // 초기 로딩: 유저, 강의, 리뷰 세팅
   useEffect(() => {
     const storedUser = JSON.parse(sessionStorage.getItem("minfo"));
     const storedUserData =
@@ -44,7 +46,7 @@ function MyEdu() {
     setReviewList(storedReviews);
   }, []);
 
-  // 🔸 사용자 리뷰 조회 (메모이제이션)
+  // 사용자 리뷰 조회 (메모이제이션)
   const getUserReview = useCallback(
     (eduId) =>
       reviewList.find(
@@ -53,7 +55,7 @@ function MyEdu() {
     [reviewList, userInfo]
   );
 
-  // 🔸 수강평 팝업 열기
+  // 수강평 팝업 열기
   const openReviewPopup = (eduId) => {
     const userReview = getUserReview(eduId);
 
@@ -73,7 +75,7 @@ function MyEdu() {
     setShowPopup(true);
   };
 
-  // 🔸 수강평 저장
+  // 수강평 저장
   const saveReview = () => {
     const updatedReviews = [...reviewList];
     const existingIndex = updatedReviews.findIndex(
@@ -107,7 +109,7 @@ function MyEdu() {
     setShowPopup(false);
   };
 
-  // 🔸 입력값 핸들링
+  // 입력값 핸들링
   const handleChange = (e) => {
     let { name, value } = e.target;
 
@@ -127,6 +129,21 @@ function MyEdu() {
 
   const hasEduList = useMemo(() => userEduList.length > 0, [userEduList]);
 
+  // 수강평 삭제
+  const deleteReview = () => {
+    const confirmed = window.confirm("정말로 이 수강평을 삭제하시겠습니까?");
+    if (!confirmed) return;
+
+    const updatedReviews = reviewList.filter(
+      (r) => !(r.uid === userInfo.uid && r.eduId === selectedReview.eduId)
+    );
+
+    localStorage.setItem("review-data", JSON.stringify(updatedReviews));
+    setReviewList(updatedReviews);
+    alert("수강평이 삭제되었습니다.");
+    setShowPopup(false);
+  };
+
   return (
     <div className="my-edu-wrap">
       <h2>내 학습</h2>
@@ -145,9 +162,7 @@ function MyEdu() {
                   />
                 </picture>
                 <h4>{edu.eduName}</h4>
-                <p>
-                  진도율: ({edu.eduRate}%)
-                </p>
+                <p>진도율: ({edu.eduRate}%)</p>
                 {isComplete && (
                   <button
                     className="my-review-btn"
@@ -209,6 +224,11 @@ function MyEdu() {
             </ul>
             <div>
               <button onClick={saveReview}>저장</button>
+              {selectedReview && getUserReview(selectedReview.eduId) && (
+                <button onClick={deleteReview} className="delete-btn">
+                  삭제
+                </button>
+              )}
               <button onClick={() => setShowPopup(false)}>닫기</button>
             </div>
           </div>
