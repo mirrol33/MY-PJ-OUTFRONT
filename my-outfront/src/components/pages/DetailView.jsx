@@ -127,14 +127,22 @@ const DetailView = () => {
               src={`../images/edu_thumb/${edu.idx}.png`}
               alt={`교육 이미지 ${edu.idx}`}
             />
-            {userEduRate && (
               <button
                 className="edu-btn"
                 onClick={() => navigate(`/videodetail/${edu.idx}`)}
               >
-                학습하러 가기
+                {
+                  userEduRate !== null ? (
+                    <>
+                    학습하러 가기
+                    </>
+                  ) : (
+                    <>
+                    강의 미리보기
+                    </>
+                  )
+                }
               </button>
-            )}
           </div>
         </div>
       </div>
