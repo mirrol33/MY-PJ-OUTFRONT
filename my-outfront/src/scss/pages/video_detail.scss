@@ -24,6 +24,13 @@
             left: 24px;
             padding: 10px 24px;
             cursor: pointer;
+            @include tablet-medium {
+                position: relative;
+                top: auto;
+                left: auto;
+                margin-top: 10px;
+                margin-bottom: 20px;
+            }
         }
         iframe {
             width: 100%;
@@ -45,6 +52,7 @@
         @include tablet-medium {
             width: 96%;
             border: 1px solid #ddd;
+            margin-bottom: 40px;
         }
         .edu-title {
             padding: 24px 24px 8px;
