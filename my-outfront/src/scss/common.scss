@@ -9,7 +9,10 @@ html, body {
 }
 
 .cont {
-    margin: 80px auto 0 auto;
+    margin: 60px auto 0 auto;
+    @include tablet-medium {
+        margin: 100px auto 0 auto;
+    }
 }
 
 button {
