@@ -3,7 +3,7 @@
     "idx": 1,
     "uid": "min",
     "unm": "이민경",
-    "umail": "min1004@outfront.co.kr",
+    "profileImg": "./images/mypage/1.png",
     "eduIng": [
       {
         "eduId": 1,
@@ -35,7 +35,7 @@
     "idx": 2,
     "uid": "test",
     "unm": "홍길동",
-    "umail": "",
+    "profileImg": "./images/mypage/1.png",
     "eduIng": []
   }
 ]

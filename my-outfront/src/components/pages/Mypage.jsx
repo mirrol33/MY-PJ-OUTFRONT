@@ -1,5 +1,3 @@
-// 회원 마이페이지 : Mypage.jsx
-
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import "../../scss/mypage.scss";
 import { Link, useNavigate } from "react-router-dom";
@@ -7,6 +5,7 @@ import userData from "../../js/data/user_data.json";
 import reviewData from "../../js/data/review_data.json";
 import { CartContext } from "../modules/CartContext";
 
+// 프로필 이미지 컴포넌트
 const ProfileImage = ({ profileImg, onChange }) => (
   <div>
     <label htmlFor="profile-upload">
@@ -37,14 +36,13 @@ const Mypage = () => {
     grade: 0.5,
     text: "수강 후기를 작성해주세요",
   });
-  const [profileImg, setProfileImg] = useState(
-    localStorage.getItem("profile-img") || "./images/mypage/1.png"
-  );
-  const { updateCart } = useContext(CartContext);
+  const [profileImg, setProfileImg] = useState("./images/mypage/1.png");
 
+  const { updateCart } = useContext(CartContext);
   const [eduList, setEduList] = useState([]);
   const [boardList, setBoardList] = useState([]);
 
+  // 마운트 시 데이터 로딩
   useEffect(() => {
     const minfo = JSON.parse(sessionStorage.getItem("minfo"));
     const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
@@ -65,6 +63,14 @@ const Mypage = () => {
       const currentUser = storedUserData.find((user) => user.uid === minfo.uid);
       const eduIng = currentUser?.eduIng || [];
 
+      // ✅ mypage-user-data 기준으로 이미지 설정
+      setProfileImg(currentUser?.profileImg || "./images/mypage/1.png");
+      console.log(
+        "✅ 로그인 유저 프로필 이미지 설정됨:",
+        currentUser?.profileImg
+      );
+
+      // 학습 강의 장바구니에서 제거
       const learningIds = eduIng.map((edu) => edu.eduId);
       const removedItems = storedCart.filter((item) =>
         learningIds.includes(item.idx)
@@ -87,18 +93,23 @@ const Mypage = () => {
       setEduList(eduIng);
       setBoardList(storedBoard.filter((post) => post.uid === minfo.uid));
     } else {
-      updateCart(storedCart);
+      // 로그아웃 시 기본 이미지로 초기화
+      setProfileImg("./images/mypage/1.png");
+      console.log("🚪 로그아웃 상태 - 프로필 이미지 초기화됨.");
     }
   }, []);
 
   const memoizedBoardList = useMemo(() => boardList, [boardList]);
-
   const memoizedUserEduList = useMemo(() => eduList, [eduList]);
 
+  // 수강평 팝업 열기
   const openReviewPopup = (eduId) => {
+    console.log("📌 수강평 팝업 열기 - eduId:", eduId);
+
     const userReview = reviewList.find(
       (review) => review.uid === userInfo.uid && review.eduId === eduId
     );
+
     setSelectedReview({ eduId, uid: userInfo.uid });
     setNewReview(
       userReview
@@ -109,6 +120,7 @@ const Mypage = () => {
   };
 
   const closePopup = () => {
+    console.log("❎ 수강평 팝업 닫기");
     setShowPopup(false);
     setSelectedReview(null);
     setNewReview({ grade: 0.5, text: "수강 후기를 작성해주세요" });
@@ -116,6 +128,8 @@ const Mypage = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    console.log("🖊️ 수강평 입력 변경 -", name, value);
+
     setNewReview((prev) => ({
       ...prev,
       [name]: name === "grade" ? parseFloat(value) : value,
@@ -123,6 +137,7 @@ const Mypage = () => {
   };
 
   const saveReview = () => {
+    console.log("💾 수강평 저장 시도");
     const updatedReview = {
       ...newReview,
       uid: userInfo.uid,
@@ -141,12 +156,14 @@ const Mypage = () => {
         ...updatedList[existingIndex],
         ...updatedReview,
       };
+      console.log("✏️ 기존 수강평 수정:", updatedReview);
     } else {
       const newIdx =
         updatedList.length > 0
           ? updatedList[updatedList.length - 1].idx + 1
           : 1;
       updatedList.push({ ...updatedReview, idx: newIdx });
+      console.log("🆕 새 수강평 추가:", updatedReview);
     }
 
     setReviewList(updatedList);
@@ -174,15 +191,34 @@ const Mypage = () => {
     reader.onload = (e) => {
       const img = e.target.result;
       setProfileImg(img);
-      localStorage.setItem("profile-img", img);
+      console.log("🖼️ 새로운 프로필 이미지 미리보기 설정됨");
+
+      // ✅ 로그인한 유저의 프로필 이미지 데이터 갱신
+      const minfo = JSON.parse(sessionStorage.getItem("minfo"));
+      let storedUserData = JSON.parse(localStorage.getItem("mypage-user-data"));
+
+      if (minfo && storedUserData) {
+        const updatedUserData = storedUserData.map((user) =>
+          user.uid === minfo.uid ? { ...user, profileImg: img } : user
+        );
+        localStorage.setItem(
+          "mypage-user-data",
+          JSON.stringify(updatedUserData)
+        );
+        console.log(
+          "💾 로컬스토리지 mypage-user-data에 프로필 이미지 반영 완료"
+        );
+      }
     };
+
     reader.readAsDataURL(file);
   };
 
   // 수강평 삭제
   const deleteReview = () => {
     if (!selectedReview) return;
-  
+    console.log("🗑️ 수강평 삭제 -", selectedReview);
+
     const updatedList = reviewList.filter(
       (review) =>
         !(
@@ -190,7 +226,7 @@ const Mypage = () => {
           review.eduId === selectedReview.eduId
         )
     );
-  
+
     setReviewList(updatedList);
     localStorage.setItem("review-data", JSON.stringify(updatedList));
     alert("수강평이 삭제되었습니다.");
@@ -301,6 +337,7 @@ const Mypage = () => {
           </ul>
         </div>
       </div>
+
       {/* 수강평 작성 팝업 */}
       {showPopup && selectedReview && (
         <div className="review-popup">
@@ -335,9 +372,10 @@ const Mypage = () => {
             <div>
               <button onClick={saveReview}>저장</button>
               {reviewList.some(
-  (r) =>
-    r.uid === selectedReview.uid && r.eduId === selectedReview.eduId
-) && <button onClick={deleteReview}>삭제</button>}
+                (r) =>
+                  r.uid === selectedReview.uid &&
+                  r.eduId === selectedReview.eduId
+              ) && <button onClick={deleteReview}>삭제</button>}
               <button onClick={closePopup}>닫기</button>
             </div>
           </div>
