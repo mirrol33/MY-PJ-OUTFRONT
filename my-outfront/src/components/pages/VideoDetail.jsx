@@ -7,24 +7,20 @@ import "../../scss/pages/video_detail.scss";
 function VideoDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const storageKey = `watchedVideos_${id}`;
-
   const [currentVideo, setCurrentVideo] = useState(null);
   const [watchedVideos, setWatchedVideos] = useState([]);
   const [playedCount, setPlayedCount] = useState(0);
+  const [eduRate, setEduRate] = useState(0);
+  const [userNotFoundMsg, setUserNotFoundMsg] = useState("");
+  const [hasEduAccess, setHasEduAccess] = useState(false); // 🔸강의 접근 권한 상태
 
-  // ✅ 로그인 상태
   const [loginSts, setLoginSts] = useState(() => {
     const saved = sessionStorage.getItem("minfo");
     return saved ? JSON.parse(saved) : null;
   });
 
-  // ✅ 현재 강의 데이터
-  const video = useMemo(() => {
-    return videoData.find((v) => v.eduId === Number(id));
-  }, [id]);
+  const video = useMemo(() => videoData.find((v) => v.eduId === Number(id)), [id]);
 
-  // ✅ 섹션 목록
   const sections = useMemo(() => {
     if (!video) return [];
     return Object.entries(video)
@@ -32,91 +28,81 @@ function VideoDetail() {
       .map(([key, val]) => ({ name: key, videos: val }));
   }, [video]);
 
-  // ✅ 전체 강의 목록
-  const allVideos = useMemo(() => {
-    return sections.flatMap((sec) => sec.videos);
-  }, [sections]);
+  const allVideos = useMemo(() => sections.flatMap((sec) => sec.videos), [sections]);
 
-  // ✅ 첫 번째 영상 선택
   useEffect(() => {
     if (allVideos.length > 0) {
       setCurrentVideo(allVideos[0]);
     }
   }, [allVideos]);
 
-  // ✅ 로컬스토리지에서 기존 시청 영상 목록 불러오기
+  // 로컬에서 유저 학습 정보 불러오기
   useEffect(() => {
-    const saved = localStorage.getItem(storageKey);
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      setWatchedVideos(parsed);
-      setPlayedCount(parsed.length);
-      console.log("[로드] watchedVideos:", parsed);
-    }
-  }, [storageKey]);
+    if (!loginSts) return;
 
-  // ✅ 영상 로드될 때 시청 기록 처리
+    const storedUserData = JSON.parse(localStorage.getItem("mypage-user-data"));
+    const userIdx = storedUserData?.findIndex((user) => user.uid === loginSts.uid);
+    if (userIdx === -1 || userIdx === undefined) {
+      setUserNotFoundMsg("⚠️ 로컬스토리지에서 로그인된 사용자 정보를 찾을 수 없습니다.");
+      setHasEduAccess(false);
+      return;
+    }
+
+    setUserNotFoundMsg("");
+
+    const edu = storedUserData[userIdx].eduIng.find((e) => e.eduId === Number(id));
+    if (!edu) {
+      // 🔸 강의 정보가 없다면 구매하지 않은 상태
+      setHasEduAccess(false);
+      setPlayedCount(0);
+      setEduRate(0);
+      return;
+    }
+
+    // 🔸 구매한 상태
+    setHasEduAccess(true);
+    setWatchedVideos(edu.watchedVideos);
+    setPlayedCount(edu.watchedVideos.length);
+    setEduRate(edu.eduRate);
+  }, [id, loginSts]);
+
   const handleVideoLoad = () => {
     const vid = currentVideo?.vId;
-    if (!vid || watchedVideos.includes(vid)) return;
+    if (!vid || !loginSts || !hasEduAccess) return;
 
-    // 로그인 안 된 상태면 시청 기록 저장 안함
-    if (!loginSts) {
-      console.warn("로그인이 필요합니다.");
-      return;
-    }
+    const storedUserData = JSON.parse(localStorage.getItem("mypage-user-data"));
+    const userIdx = storedUserData.findIndex((user) => user.uid === loginSts.uid);
+    const eduIdx = storedUserData[userIdx].eduIng.findIndex((edu) => edu.eduId === Number(id));
+    const eduObj = { ...storedUserData[userIdx].eduIng[eduIdx] };
 
-    // 1. watchedVideos 상태 및 localStorage 업데이트
-    const updatedVideos = [...new Set([...watchedVideos, vid])];
-    setWatchedVideos(updatedVideos);
-    setPlayedCount(updatedVideos.length);
-    localStorage.setItem(storageKey, JSON.stringify(updatedVideos));
-    console.log("[시청 업데이트] watchedVideos 저장:", updatedVideos);
+    if (eduObj.watchedVideos.includes(vid)) return;
 
-    // 2. 유저 데이터 가져오기
-    let storedUserData = JSON.parse(localStorage.getItem("mypage-user-data"));
-    if (!storedUserData) {
-      storedUserData = userData;
-      console.log("[초기화] userData로 초기화");
-    }
-
-    // 3. 로그인된 유저 찾기
-    const userIdx = storedUserData.findIndex(
-      (user) => user.uid === loginSts.uid
-    );
-    if (userIdx === -1) {
-      console.warn("로그인된 uid를 찾을 수 없습니다:", loginSts.uid);
-      return;
-    }
-
-    const user = { ...storedUserData[userIdx] };
-    const eduIdx = user.eduIng.findIndex((edu) => edu.eduId === Number(id));
-    if (eduIdx === -1) {
-      console.warn("강의 정보 없음:", id);
-      return;
-    }
-
-    // 4. 시청 진도 업데이트
-    const eduObj = { ...user.eduIng[eduIdx] };
     const newWatched = [...new Set([...eduObj.watchedVideos, vid])];
     const newRate = Math.round((newWatched.length / allVideos.length) * 100);
 
     eduObj.watchedVideos = newWatched;
     eduObj.eduRate = newRate;
 
-    user.eduIng[eduIdx] = eduObj;
-    storedUserData[userIdx] = user;
-
-    // 5. localStorage 저장
+    storedUserData[userIdx].eduIng[eduIdx] = eduObj;
     localStorage.setItem("mypage-user-data", JSON.stringify(storedUserData));
-    console.log("[저장 완료] 유저 진도 업데이트 완료:", newRate + "%");
+
+    setWatchedVideos(newWatched);
+    setPlayedCount(newWatched.length);
+    setEduRate(newRate);
   };
 
-  const percentage = Math.round((playedCount / allVideos.length) * 100);
+  const renderEduRate = () => {
+    if (!loginSts || !hasEduAccess) return null;
+    return (
+      <div className="edu-rate">
+        학습 진도율: {playedCount}/{allVideos.length}강 ({eduRate}%)
+      </div>
+    );
+  };
 
   if (!video || !currentVideo) {
     return (
-      <div className="empty">
+      <div className="video-detail-wrap">
         <button className="back-btn" onClick={() => navigate(-1)}>
           <i className="fa-solid fa-arrow-left"></i> 뒤로가기
         </button>
@@ -149,20 +135,22 @@ function VideoDetail() {
         <div className="video-des">
           <p>{currentVideo.vTxt}</p>
         </div>
+        {userNotFoundMsg && (
+          <div className="warning-msg">
+            <p>{userNotFoundMsg}</p>
+          </div>
+        )}
       </div>
 
       <div className="aside-area">
         <div className="edu-title">{video.eduTit}</div>
-        <div className="edu-rate">
-          학습 진도율: {playedCount}/{allVideos.length}강 ({percentage}%)
-        </div>
-
+        {renderEduRate()}
         {sections.map((sec, idx) => (
           <ul key={idx}>
             <h3>{sec.name.replace("section", "Section ")}</h3>
             {sec.videos.map((v) => {
               const isSection1 = sec.name === "section1";
-              const isAccessible = loginSts || isSection1;
+              const isAccessible = isSection1 || (loginSts && hasEduAccess);
               return (
                 <li
                   key={v.vId}
@@ -176,7 +164,7 @@ function VideoDetail() {
                     onClick={(e) => {
                       e.preventDefault();
                       if (!isAccessible) {
-                        alert("로그인 후 시청할 수 있는 영상입니다.");
+                        alert("해당 강의는 결제 후 이용할 수 있습니다.");
                         return;
                       }
                       setCurrentVideo(v);
