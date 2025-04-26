@@ -4,16 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useCart } from "../modules/CartContext";
 import "../../scss/main.scss";
 import eduData from "../../js/data/edu_data.json";
-
-const eduCate = [
-  "전체",
-  "개발프로그래밍",
-  "게임개발",
-  "데이터사이언스",
-  "인공지능",
-  "보안네트워크",
-  "기타",
-];
+import eduCate from "../../js/edu_cate.js";
 
 const getHashCategory = () => {
   const hash = decodeURIComponent(window.location.hash.replace("#", ""));
@@ -47,23 +38,24 @@ const Main = () => {
   const formatPrice = (price) =>
     Number(price) === 0 ? "무료" : `₩${Number(price).toLocaleString()}`;
 
+  const [initialEduData] = useState(eduData);
+
   const getFilteredAndSortedData = useCallback(() => {
     let list =
       selCate === "전체"
-        ? eduData
-        : eduData.filter(({ gCate }) => gCate === selCate);
-
+        ? initialEduData
+        : initialEduData.filter(({ gCate }) => gCate === selCate);
+  
     if (levelFilter !== "all") {
       list = list.filter(({ gLevel }) => gLevel === levelFilter);
     }
-
-    return list.sort((a, b) => {
-      if (sortType === "name") return a.gName.localeCompare(b.gName, "ko-KR");
-      if (sortType === "low-price") return a.gPrice - b.gPrice;
-      if (sortType === "high-price") return b.gPrice - a.gPrice;
-      return 0;
-    });
-  }, [selCate, levelFilter, sortType]);
+  
+    if (sortType === "name") return [...list].sort((a, b) => a.gName.localeCompare(b.gName, "ko-KR"));
+    if (sortType === "low-price") return [...list].sort((a, b) => a.gPrice - b.gPrice);
+    if (sortType === "high-price") return [...list].sort((a, b) => b.gPrice - a.gPrice);
+  
+    return list;
+  }, [selCate, levelFilter, sortType, initialEduData]);
 
   const sortedList = getFilteredAndSortedData();
   const itemsPerPage = 10;
@@ -101,7 +93,6 @@ const Main = () => {
         </ul>
 
         <div className="sort-opt">
-          <label>정렬</label>
           <select
             onChange={(e) => setSortType(e.target.value)}
             value={sortType}

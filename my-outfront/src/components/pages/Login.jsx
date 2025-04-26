@@ -2,7 +2,6 @@
 
 import React, { useContext, useEffect, useState } from "react";
 import "../../scss/pages/join.scss";
-import "../../scss/pages/member.scss";
 import { initData } from "../../js/func/mem_fn";
 import { dCon } from "../modules/dCon";
 
@@ -112,11 +111,6 @@ function Login() {
       <div className="join-top">
         <h2 className="join-title">로그인</h2>
       </div>
-      <ul className="slide-text">
-        <li className="slide">아웃프런과 함께 달릴 준비 되셨나요? 😎</li>
-        <li className="slide">아웃프런이 다 알려드릴게요. 따라오세요👍</li>
-        <li className="slide">다양한 학습의 기회를 얻으세요 💖</li>
-      </ul>
       <form className="join-form" onSubmit={onSubmit}>
         <ul>
           <li className="join-id">

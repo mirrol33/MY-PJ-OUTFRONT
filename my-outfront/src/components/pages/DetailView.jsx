@@ -164,7 +164,7 @@ const DetailView = () => {
               </p>
               {userEduRate !== null ? (
                 <button className="edu-state-btn">
-                  <Link to="/myedu">내 학습 리스트 보러가기</Link>
+                  <Link to="/myedu">내 학습 페이지 이동</Link>
                 </button>
               ) : (
                 <>

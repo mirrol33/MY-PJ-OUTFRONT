@@ -1,4 +1,4 @@
-// 회원 내학습 페이지 : MyEdu.jsx
+// MyEdu.jsx
 
 import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
@@ -8,7 +8,6 @@ import userData from "../../js/data/user_data.json";
 
 function MyEdu() {
   const navigate = useNavigate();
-
   const [userInfo, setUserInfo] = useState(null);
   const [userEduList, setUserEduList] = useState([]);
   const [reviewList, setReviewList] = useState([]);

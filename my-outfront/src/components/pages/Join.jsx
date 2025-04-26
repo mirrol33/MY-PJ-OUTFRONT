@@ -154,12 +154,6 @@ function Join() {
         <h2 className="join-title">회원가입</h2>
       </div>
 
-      <ul className="slide-text">
-        <li className="slide">아웃프런에서 학습한 역량을 펼쳐보세요 😎</li>
-        <li className="slide">나의 온라인 사수, 아웃프런 👍</li>
-        <li className="slide">아웃프런에서 다양한 학습의 기회를 얻으세요 💖</li>
-      </ul>
-
       <form onSubmit={onSubmit} className="join-form">
         <ul>
           <li className="join-id">

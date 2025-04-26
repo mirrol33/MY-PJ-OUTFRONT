@@ -2,16 +2,7 @@ import { memo, useContext, useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../../scss/header.scss";
 import { CartContext } from "../modules/CartContext";
-
-const eduCate = [
-  "전체",
-  "개발프로그래밍",
-  "게임개발",
-  "데이터사이언스",
-  "인공지능",
-  "보안네트워크",
-  "기타",
-];
+import eduCate from "../../js/edu_cate.js";
 
 const Header = memo(({ goPage, loginSts, setLoginSts }) => {
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -131,12 +122,12 @@ const Header = memo(({ goPage, loginSts, setLoginSts }) => {
         <ul>
           <li>
             <h1 className="logo">
-              <Link to="/">
+              <a href={`${publicUrl}/#전체`}>
                 <img
                   src={`${publicUrl}/images/main/inflearn_logo.png`}
                   alt="logo"
                 />
-              </Link>
+              </a>
             </h1>
           </li>
 
