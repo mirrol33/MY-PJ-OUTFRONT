@@ -105,7 +105,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   /* 가로크기 지정(최대361px) */
-  width: min(361px, 40vw);
+  // width: min(361px, 40vw);
 }
 
 /*각 th별 가로크기지정 */
