@@ -7,6 +7,10 @@
   padding: 0 24px;
   box-sizing: border-box;
   max-width: 1440px;
+  @include tablet-medium {
+    padding: 0;
+    width: 96%;
+  }
 }
 
  h1.tit {
@@ -115,7 +119,7 @@
   width: 30%;
 }
 .dtbl th:nth-child(4) {
-  width: 15%;
+  width: 10%;
 }
 .dtbl th:nth-child(5) {
   width: 5%;
