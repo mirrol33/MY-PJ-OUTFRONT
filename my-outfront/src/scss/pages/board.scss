@@ -8,8 +8,9 @@
   box-sizing: border-box;
   max-width: 1440px;
   @include tablet-medium {
-    padding: 0;
     width: 96%;
+    padding: 0;
+    overflow: hidden;
   }
 }
 
@@ -58,7 +59,7 @@
   /*테이블전체*/
   text-align: center;
   /*텍스트 가로 중앙*/
-  font-size: 14px;
+  font-size: min(6vw, 1.4rem);
   border-collapse: collapse;
   margin: 0 auto;
   width: 100%;
