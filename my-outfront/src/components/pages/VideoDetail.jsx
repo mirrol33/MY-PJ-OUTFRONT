@@ -102,7 +102,7 @@ function VideoDetail() {
 
   if (!video || !currentVideo) {
     return (
-      <div className="video-detail-wrap">
+      <div className="video-detail-empty-wrap">
         <button className="back-btn" onClick={() => navigate(-1)}>
           <i className="fa-solid fa-arrow-left"></i> 뒤로가기
         </button>

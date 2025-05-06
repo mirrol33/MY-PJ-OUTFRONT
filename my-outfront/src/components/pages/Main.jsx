@@ -1,4 +1,5 @@
 // Main.jsx
+
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../modules/CartContext";
@@ -6,6 +7,7 @@ import "../../scss/main.scss";
 import eduData from "../../js/data/edu_data.json";
 import eduCate from "../../js/edu_cate.js";
 
+// 현재 해시값을 카테고리로 변환
 const getHashCategory = () => {
   const hash = decodeURIComponent(window.location.hash.replace("#", ""));
   return eduCate.includes(hash) ? hash : "전체";
@@ -15,65 +17,83 @@ const Main = () => {
   const navigate = useNavigate();
   const { addToCart, isInCart, filterCartWithUserData } = useCart();
 
+  // 상태 초기화
   const [selCate, setSelCate] = useState(() => getHashCategory());
   const [currentPage, setCurrentPage] = useState(1);
   const [levelFilter, setLevelFilter] = useState("all");
   const [sortType, setSortType] = useState("default");
 
-  // 해시 변경 감지 + 필터된 장바구니 초기 설정
+  // 페이지당 아이템 수
+  const itemsPerPage = 10;
+
+  // 로그인된 사용자에 맞게 장바구니 필터링 + 해시 변경 감지
   useEffect(() => {
-    filterCartWithUserData(); // 로그인 사용자 학습 중인 강의 제외
+    filterCartWithUserData();
 
     const handleHashChange = () => {
       const newCate = getHashCategory();
       if (newCate !== selCate) {
         setSelCate(newCate);
-        setCurrentPage(1);
+        setCurrentPage(1); // 카테고리 바뀌면 페이지 초기화
       }
     };
+
     window.addEventListener("hashchange", handleHashChange);
     return () => window.removeEventListener("hashchange", handleHashChange);
   }, [selCate, filterCartWithUserData]);
 
+  // 가격 포맷팅 함수
   const formatPrice = (price) =>
     Number(price) === 0 ? "무료" : `₩${Number(price).toLocaleString()}`;
 
-  const [initialEduData] = useState(eduData);
-
+  // 카테고리, 레벨, 정렬 기준으로 필터링/정렬된 데이터 반환
   const getFilteredAndSortedData = useCallback(() => {
-    let list =
-      selCate === "전체"
-        ? initialEduData
-        : initialEduData.filter(({ gCate }) => gCate === selCate);
-  
+    let list = selCate === "전체"
+      ? eduData
+      : eduData.filter(({ gCate }) => gCate === selCate);
+
     if (levelFilter !== "all") {
       list = list.filter(({ gLevel }) => gLevel === levelFilter);
     }
-  
-    if (sortType === "name") return [...list].sort((a, b) => a.gName.localeCompare(b.gName, "ko-KR"));
-    if (sortType === "low-price") return [...list].sort((a, b) => a.gPrice - b.gPrice);
-    if (sortType === "high-price") return [...list].sort((a, b) => b.gPrice - a.gPrice);
-  
-    return list;
-  }, [selCate, levelFilter, sortType, initialEduData]);
+
+    switch (sortType) {
+      case "name":
+        return [...list].sort((a, b) =>
+          a.gName.localeCompare(b.gName, "ko-KR")
+        );
+      case "low-price":
+        return [...list].sort((a, b) => a.gPrice - b.gPrice);
+      case "high-price":
+        return [...list].sort((a, b) => b.gPrice - a.gPrice);
+      default:
+        return list;
+    }
+  }, [selCate, levelFilter, sortType]);
 
   const sortedList = getFilteredAndSortedData();
-  const itemsPerPage = 10;
   const totalPages = Math.ceil(sortedList.length / itemsPerPage);
   const currentList = sortedList.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
 
-  const handlePageChange = (newPage) => {
+  // 페이지네이션 관련
+  const handlePageChange = useCallback((newPage) => {
     if (newPage !== currentPage && newPage >= 1 && newPage <= totalPages) {
       setCurrentPage(newPage);
     }
-  };
+  }, [currentPage, totalPages]);
+
+  const pageGroupSize = 3;
+  const currentGroup = Math.ceil(currentPage / pageGroupSize);
+  const startPage = (currentGroup - 1) * pageGroupSize + 1;
+  const endPage = Math.min(startPage + pageGroupSize - 1, totalPages);
 
   return (
     <div className="main-wrap">
       <h2>{selCate}</h2>
+
+      {/* 카테고리 메뉴 */}
       <div className="edu-menu-wrap">
         <ul className="edu-menu">
           {eduCate.map((category, i) => (
@@ -92,20 +112,15 @@ const Main = () => {
           ))}
         </ul>
 
+        {/* 정렬 및 레벨 필터 */}
         <div className="sort-opt">
-          <select
-            onChange={(e) => setSortType(e.target.value)}
-            value={sortType}
-          >
+          <select onChange={(e) => setSortType(e.target.value)} value={sortType}>
             <option value="default">기본 정렬</option>
             <option value="name">이름순 (가나다 순)</option>
             <option value="low-price">가격 낮은 순</option>
             <option value="high-price">가격 높은 순</option>
           </select>
-          <select
-            onChange={(e) => setLevelFilter(e.target.value)}
-            value={levelFilter}
-          >
+          <select onChange={(e) => setLevelFilter(e.target.value)} value={levelFilter}>
             <option value="all">전체 레벨</option>
             <option value="입문">입문</option>
             <option value="초급">초급</option>
@@ -115,6 +130,7 @@ const Main = () => {
         </div>
       </div>
 
+      {/* 강의 리스트 출력 */}
       <ul className="list-wrap">
         {currentList.map((edu) => (
           <li key={edu.idx} className="edu-list">
@@ -125,7 +141,7 @@ const Main = () => {
               />
             </picture>
             <h3>{edu.gName}</h3>
-            <p className="ginfo"> {edu.gInfo}</p>
+            <p className="ginfo">{edu.gInfo}</p>
             <p>레벨: {edu.gLevel}</p>
             <p>가격: {formatPrice(edu.gPrice)}</p>
             <p>분류: {edu.gCate}</p>
@@ -141,54 +157,47 @@ const Main = () => {
                   }`}
                 ></i>
               </a>
-              {/* <a className="heart-btn" href="#none">
-                <i className="fa-solid fa-heart"></i>
-              </a> */}
             </div>
           </li>
         ))}
       </ul>
 
+      {/* 페이지네이션 */}
       {totalPages > 1 && (
         <div className="pagination">
           <ol>
-            <li
-              onClick={() => handlePageChange(1)}
-              style={{ display: currentPage === 1 ? "none" : "inline-block" }}
-            >
-              <i className="fa-solid fa-backward"></i>
-            </li>
-            <li
-              onClick={() => handlePageChange(currentPage - 1)}
-              style={{ display: currentPage === 1 ? "none" : "inline-block" }}
-            >
-              <i className="fa-solid fa-arrow-left"></i>
-            </li>
-            {[...Array(totalPages)].map((_, i) => (
-              <li
-                key={i + 1}
-                onClick={() => handlePageChange(i + 1)}
-                className={i + 1 === currentPage ? "active" : ""}
-              >
-                {i + 1}
+            {currentGroup > 1 && (
+              <li onClick={() => handlePageChange(1)}>
+                <i className="fa-solid fa-backward"></i>
               </li>
-            ))}
-            <li
-              onClick={() => handlePageChange(currentPage + 1)}
-              style={{
-                display: currentPage === totalPages ? "none" : "inline-block",
-              }}
-            >
-              <i className="fa-solid fa-arrow-right"></i>
-            </li>
-            <li
-              onClick={() => handlePageChange(totalPages)}
-              style={{
-                display: currentPage === totalPages ? "none" : "inline-block",
-              }}
-            >
-              <i className="fa-solid fa-forward"></i>
-            </li>
+            )}
+            {currentPage > 1 && (
+              <li onClick={() => handlePageChange(currentPage - 1)}>
+                <i className="fa-solid fa-arrow-left"></i>
+              </li>
+            )}
+            {[...Array(endPage - startPage + 1)].map((_, i) => {
+              const pageNum = startPage + i;
+              return (
+                <li
+                  key={pageNum}
+                  className={pageNum === currentPage ? "active" : ""}
+                  onClick={() => handlePageChange(pageNum)}
+                >
+                  {pageNum}
+                </li>
+              );
+            })}
+            {currentPage < totalPages && (
+              <li onClick={() => handlePageChange(currentPage + 1)}>
+                <i className="fa-solid fa-arrow-right"></i>
+              </li>
+            )}
+            {endPage < totalPages && (
+              <li onClick={() => handlePageChange(totalPages)}>
+                <i className="fa-solid fa-forward"></i>
+              </li>
+            )}
           </ol>
         </div>
       )}

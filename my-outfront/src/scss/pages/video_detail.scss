@@ -1,5 +1,21 @@
 @import "../variables";
 
+.video-detail-empty-wrap {
+    padding: 100px 0;
+    text-align: center;
+    button {
+        padding: 10px 24px;
+        margin-bottom: 24px;
+        cursor: pointer;
+    }
+    .empty-msg {
+        width: 100%;
+        font-size: 1.6rem;
+        text-align: center;
+        color: $color-midgray;
+    }
+}
+
 .video-detail-wrap {
     position: relative;
     width: 100%;
@@ -83,26 +99,5 @@
                 }
             }
         }
-    }
-}
-.empty {
-    margin: 0 auto;
-    min-height: calc(100svh - 60px);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    button {
-        margin: 24px auto;
-        padding: 10px 24px;
-        text-align: center;
-        display: block;
-        cursor: pointer;
-    }
-    .empty-msg {
-        width: 100%;
-        font-size: 1.6rem;
-        text-align: center;
-        color: $color-midgray;
     }
 }
